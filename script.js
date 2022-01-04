@@ -9,15 +9,9 @@ var gameboard = [
 
 var playerOne
 var playerTwo
-var currentPlayer
+var currentIndex
+var currentRow
 var playerOneTurn = true
-
-// need gameplay to switch rounds to fill board
-// then scoring mechanism and minimax
-
-// game status function?
-// red goes first, run playRound
-// add swap turns, win test
 
 function pickSides() {
     playerOne = prompt('Player One chooses')
@@ -29,13 +23,15 @@ function playRound() {
     const columnPick = parseInt(playerEnters);
     let i;
     for (i = 5; i > -1; i--) 
-        {if (Number.isInteger(gameboard[i][columnPick-1]))
-            {gameboard[i].splice((columnPick -1), 1, checkClass())
+        {if (Number.isInteger(gameboard[i][columnPick-1])) {
+            currentIndex = (columnPick -1)
+            currentRow = i
+            gameboard[i].splice((columnPick -1), 1, checkClass())
+            console.log(currentRow, currentIndex)
+            checkHorizontalWin()
+            swapTurns()
             return}
         }
-    
-    // nothing happens after return
-    // swapTurns()
     };
 
 function swapTurns() {
@@ -48,22 +44,54 @@ function checkClass() {
     } else {
     return playerTwo
     }
-    };
+};
 
 function beginGame(){
-    for (i=0; i<5; i++){
+    for (i=0; i<10; i++){
         playRound()
-        // swapTurns()
     }
     console.log(gameboard)
 }
 
+function checkHorizontalWin() {
+    if (
+        (gameboard[currentRow][currentIndex-1] == checkClass() && 
+        gameboard[currentRow][currentIndex-2] == checkClass() &&
+        gameboard[currentRow][currentIndex-3] == checkClass())
+        ||
+        (gameboard[currentRow][currentIndex+1] == checkClass() && 
+        gameboard[currentRow][currentIndex+2] == checkClass() &&
+        gameboard[currentRow][currentIndex+3] == checkClass())
+        ||
+        (gameboard[currentRow][currentIndex+1] == checkClass() && 
+        gameboard[currentRow][currentIndex-1] == checkClass() &&
+        gameboard[currentRow][currentIndex-2] == checkClass())
+        ||
+        (gameboard[currentRow][currentIndex+1] == checkClass() && 
+        gameboard[currentRow][currentIndex+2] == checkClass() &&
+        gameboard[currentRow][currentIndex-1] == checkClass())
+        )
+        {console.log("win")
+        return}
+};
+
+function checkVerticalWin() {
+    if (
+        (gameboard[currentRow+1][currentIndex] == checkClass() && 
+        gameboard[currentRow+2][currentIndex] == checkClass() &&
+        gameboard[currentRow+3][currentIndex] == checkClass())
+        )
+        {console.log("win")
+        return}
+};
+
+
+// the play continues after a win because of the beginGame loop
+// I need to set a while loop for it to close when win declared
+
+
+
 pickSides();
 beginGame();
-
-// while loop fills the board until no numbers?
-// while gameboard includes numbers playround?
-
-// without scoring, just make terminal condition the number of Xs in gameboard(like 10)
 
 
