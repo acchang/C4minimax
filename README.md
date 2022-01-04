@@ -1,5 +1,9 @@
 # C4minimax
 
+1/4/2022
+working out the gameplay in primitives alone. Got some Odinhelp:
+https://discord.com/channels/505093832157691914/690590001486102589/927965098960637985
+
 
 1/3/2022
 this is in python but it was helpful, it will be even more when I get the gameplay down
