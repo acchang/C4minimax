@@ -1,21 +1,24 @@
 # C4minimax
 
 1/5/2022
-I had to abandon the checking mechanism I started with because it goes out of bounds, so someone suggested something using more recursive methods, map and foreach.
+
+I had to abandon the checking mechanism I started with because it goes out of bounds, so:
+
+1) someone suggested something using more recursive methods, map and foreach.
 https://www.reddit.com/r/learnjavascript/comments/rwb7il/how_can_i_get_avoid_undefined_when_checking_a/
 
-This forloop is rather elegant:
+2) This forloop is rather elegant:
 https://stackoverflow.com/questions/33181356/connect-four-game-checking-for-wins-js
 https://stackoverflow.com/questions/15457796/four-in-a-row-logic
 
-I could also add borders to prevent out of bounds
+3) I could also add borders to prevent out of bounds issues
 or turn each row into a string and use regex to find a match of 4
 https://stackoverflow.com/questions/44936747/connect-4-algorithm-in-javascript
 
 this was more complicated than it needed to be:
 https://medium.com/@fsadikin/lessons-learned-in-making-connect-4-41c0b86df360
 
-Also looked at this solution in Ruby
+Also looked at this solution in Ruby (hard to follow, not that helpful)
 https://discord.com/channels/505093832157691914/513125308757442562/918947467989483592
 
 

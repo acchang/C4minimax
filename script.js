@@ -30,10 +30,9 @@ function playRound() {
             gameboard[i].splice((columnPick -1), 1, checkClass())
             console.log(currentRow, currentIndex)
             console.log(gameboard)
-            checkHorizontalWin()
-            checkVerticalWin()
-            // checkDiagonalFromTopWin()
-            // checkDiagonalFromBottomWin()
+            horizontalCheck()
+            verticalCheck()
+            downrightCheck()
             swapTurns()
             return}
         }
@@ -52,107 +51,58 @@ function checkClass() {
 };
 
 function beginGame(){
-    //while isThereAWinner=False
-    for (i=0; i<15; i++){
+    while (isThereAWinner == false) {
         playRound()
     }
     console.log(gameboard)
-}
-
-function checkHorizontalWin() {
-    if (
-        (gameboard[currentRow][currentIndex-1] == checkClass() && 
-        gameboard[currentRow][currentIndex-2] == checkClass() &&
-        gameboard[currentRow][currentIndex-3] == checkClass())
-        ||
-        (gameboard[currentRow][currentIndex+1] == checkClass() && 
-        gameboard[currentRow][currentIndex+2] == checkClass() &&
-        gameboard[currentRow][currentIndex+3] == checkClass())
-        ||
-        (gameboard[currentRow][currentIndex+1] == checkClass() && 
-        gameboard[currentRow][currentIndex-1] == checkClass() &&
-        gameboard[currentRow][currentIndex-2] == checkClass())
-        ||
-        (gameboard[currentRow][currentIndex+1] == checkClass() && 
-        gameboard[currentRow][currentIndex+2] == checkClass() &&
-        gameboard[currentRow][currentIndex-1] == checkClass())
-        )
-        {console.log("win")
-        isThereAWinner = true
-        console.log(isThereAWinner)
-        return}
 };
 
-function checkVerticalWin() {
-    if (currentRow > 2){return}
-    else if ( 
-        gameboard[currentRow+1][currentIndex] == checkClass() && 
-        gameboard[currentRow+2][currentIndex] == checkClass() &&
-        gameboard[currentRow+3][currentIndex] == checkClass())
-        {console.log("win")
-        isThereAWinner = true
-        return}
+function findFour(w,x,y,z) {
+    // Checks first cell against player and all cells match
+    return ((w == checkClass()) && (w === x) && (w === y) && (w === z));
 };
 
-
-
-
-// I need to check the diagonal conditions for going to an undefined row
-// and verify that's why undefined
-
-function checkDiagonalFromTopWin() {
-    if (currentRow > 2){return}
-    else if (
-        (gameboard[currentRow+1][currentIndex+1] == checkClass() && 
-        gameboard[currentRow+2][currentIndex+2] == checkClass() &&
-        gameboard[currentRow+3][currentIndex+3] == checkClass())
-        ||
-        (gameboard[currentRow-1][currentIndex-1] == checkClass() && 
-        gameboard[currentRow-2][currentIndex-2] == checkClass() &&
-        gameboard[currentRow-3][currentIndex-3] == checkClass())
-        ||
-        (gameboard[currentRow-1][currentIndex-1] == checkClass() && 
-        gameboard[currentRow+1][currentIndex+1] == checkClass() &&
-        gameboard[currentRow+2][currentIndex+2] == checkClass())
-        ||
-        (gameboard[currentRow-1][currentIndex-1] == checkClass() && 
-        gameboard[currentRow-2][currentIndex-2] == checkClass() &&
-        gameboard[currentRow+1][currentIndex+1] == checkClass())
-        )
-        {console.log("win")
-        isThereAWinner=True
-        return}
+function downrightCheck() {
+    for (r=0; r<3; r++) {
+        for (c=0; c<4; c++){
+            if (findFour(gameboard[r][c], gameboard[r+1][c+1], gameboard[r+2][c+2], gameboard[r+3][c+3])) {
+                console.log("win")
+                isThereAWinner = true
+                console.log(gameboard[r][c], gameboard[r+1][c+1], gameboard[r+2][c+2], gameboard[r+3][c+3])
+                return
+            }
+        }
+    }
 };
 
-function checkDiagonalFromBottomWin() {
-    if (
-        (gameboard[currentRow-1][currentIndex+1] == checkClass() && 
-        gameboard[currentRow-2][currentIndex+2] == checkClass() &&
-        gameboard[currentRow-3][currentIndex+3] == checkClass())
-        ||
-        (gameboard[currentRow+1][currentIndex-1] == checkClass() && 
-        gameboard[currentRow+2][currentIndex-2] == checkClass() &&
-        gameboard[currentRow+3][currentIndex-3] == checkClass())
-        ||
-        (gameboard[currentRow-1][currentIndex+1] == checkClass() && 
-        gameboard[currentRow-2][currentIndex+2] == checkClass() &&
-        gameboard[currentRow+1][currentIndex-1] == checkClass())
-        ||
-        (gameboard[currentRow+1][currentIndex-1] == checkClass() && 
-        gameboard[currentRow+2][currentIndex-2] == checkClass() &&
-        gameboard[currentRow-1][currentIndex+1] == checkClass())
-        )
-        {console.log("win")
-        isThereAWinner=True
-        return}
+function verticalCheck() {
+    for (r=5; r>2; r--) {
+        for (c=0; c<7; c++){
+            if (findFour(gameboard[r][c], gameboard[r-1][c], gameboard[r-2][c], gameboard[r-3][c])) {
+                console.log("win")
+                isThereAWinner = true
+                console.log(gameboard[r][c], gameboard[r-1][c], gameboard[r-2][c], gameboard[r-3][c])
+                return
+            }
+        }
+    }
 };
 
-
+function horizontalCheck() {
+    for (r=0; r<6; r++) {
+        for (c=0; c<4; c++){
+            if (findFour(gameboard[r][c], gameboard[r][c+1], gameboard[r][c+2], gameboard[r][c+3])) {
+                console.log("win")
+                isThereAWinner = true
+                return
+            }
+        }
+    }
+};
 
 
 // the play continues after a win because of the beginGame loop
 // I need to set a while loop for it to close when win declared
-
 
 
 pickSides();
