@@ -33,6 +33,7 @@ function playRound() {
             horizontalCheck()
             verticalCheck()
             downrightCheck()
+            uprightCheck()
             swapTurns()
             return}
         }
@@ -51,6 +52,7 @@ function checkClass() {
 };
 
 function beginGame(){
+    // for (i=0; i<8; i++) {
     while (isThereAWinner == false) {
         playRound()
     }
@@ -62,6 +64,22 @@ function findFour(w,x,y,z) {
     return ((w == checkClass()) && (w === x) && (w === y) && (w === z));
 };
 
+// upright to check: 1,2 3,4 2,3 3,4 5,4 4,5
+function uprightCheck() {
+    for (r=5; r>2; r--) {
+        for (c=0; c<4; c++){
+            if (findFour(gameboard[r][c], gameboard[r-1][c+1], gameboard[r-2][c+2], gameboard[r-3][c+3])) {
+                console.log("win")
+                isThereAWinner = true
+                console.log(gameboard[r][c], gameboard[r-1][c+1], gameboard[r-2][c+2], gameboard[r-3][c+3])
+                return
+            }
+        }
+    }
+};
+
+
+// downright to check 4,3 2,1 3,2 2,1 2,1 1, X
 function downrightCheck() {
     for (r=0; r<3; r++) {
         for (c=0; c<4; c++){
@@ -74,6 +92,7 @@ function downrightCheck() {
         }
     }
 };
+
 
 function verticalCheck() {
     for (r=5; r>2; r--) {
@@ -99,11 +118,6 @@ function horizontalCheck() {
         }
     }
 };
-
-
-// the play continues after a win because of the beginGame loop
-// I need to set a while loop for it to close when win declared
-
 
 pickSides();
 beginGame();
