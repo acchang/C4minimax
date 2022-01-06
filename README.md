@@ -1,5 +1,15 @@
 # C4minimax
 
+1/6/2022
+I have 2/3 tasks left
+- create the DOM
+- create an automated opponent (to which the ideal minimax move will be fed)
+- create a minimax with depth
+
+This was good guidance but in python
+https://www.youtube.com/watch?v=MMLtza3CZFM
+
+
 1/5/2022
 
 I had to abandon the checking mechanism I started with because it goes out of bounds, so:
