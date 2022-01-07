@@ -11,24 +11,25 @@ var gameboard = [
 var playerOne
 var playerTwo
 var columnPick
-var playerEnters
 var currentIndex
 var currentRow
 var playerOneTurn = true
+var itsAOnePlayerGame = true
 var isThereAWinner = false
 
-function twoPlayerPickSides() {
-    playerOne = prompt('Player One chooses')
-    playerTwo = prompt('Player Two chooses')
+
+function oneOrTwoPlayerGame(){
+    typeOfGame = prompt('One or Two Player')
+    if (typeOfGame == "1"){
+        itsAOnePlayerGame = true
+        }
+    else if (typeOfGame == "2"){
+        itsAOnePlayerGame = false
+        }
+    else {alert("No")
+        return
+        }
 };
-// need to give an AI option
-
-// function 1Por2P(){
-//     prompt 1 or 2?
-//     if 2P go to picksides() and begin2PlayerGame();
-//     if 1P write beginOnePlayerGame with playerSelects, placeToken, AISelects, placetoken
-// }
-
 
 function whosPlaying() {
     if(playerOneTurn) {
@@ -37,8 +38,34 @@ function whosPlaying() {
     return playerTwo
     }
 };
-    
-function beginTwoPlayerGame(){
+
+function onePlayerPickSides(){
+    playerOne = prompt('Who are you?')
+    playerTwo = 'Computer'
+};
+
+function twoPlayerPickSides() {
+    playerOne = prompt('Player One chooses')
+    playerTwo = prompt('Player Two chooses')
+};
+
+function initializeGame() {
+    if (itsAOnePlayerGame == true) {
+        onePlayerPickSides()
+        play1PGame()}
+    else if (itsAOnePlayerGame == false) {
+        twoPlayerPickSides()
+        play2PGame()}
+};
+
+function play1PGame() {
+    while (isThereAWinner == false) {
+        playerSelectsAIGame()
+        placeToken()
+    }
+};
+
+function play2PGame() {
     while (isThereAWinner == false) {
         playerSelects()
         placeToken()
@@ -49,19 +76,30 @@ function swapTurns() {
     playerOneTurn = !playerOneTurn
 };
 
-
 // GAMEPLAY
 
-// function playRound() {
-//     playerSelects()
-//     placeToken()
-// }
-
 function playerSelects() {
-    playerEnters = prompt(whosPlaying() +  ', choose which column 1-7');
-    columnPick = parseInt(playerEnters);
-}
+    columnPick = prompt(whosPlaying() +  ', choose which column 1-7')
+    // test if row 0 if occupied, if so, say not available.
+    // if gameboard[0][columnPick] == interger, alert invalid until
+    // if it's not in available spots, ask again
+};
 
+function findAvailableSpots() {
+    availableSpots = gameboard[0].map(x => (Number.isInteger(x)))
+    console.log(availableSpots)
+// map is not what I want since map only uses isInterger to evaluate and I get true and falses/
+// create a function that says if X is an integer, return integer, then do a forEach
+};
+
+function playerSelectsAIGame() {
+    if (whosPlaying() == playerTwo) {columnPick = 6}
+    // columnPick will be random with const randomElement = array[Math.floor(Math.random() * array.length)];
+    else playerSelects();    
+};
+
+
+// starts from the bottom row and places token in chosen spot when there it is a number (unoccupied)
 function placeToken() {
     let i;
     for (i = 5; i > -1; i--) 
@@ -72,7 +110,7 @@ function placeToken() {
                     currentIndex = (columnPick -1)
                     currentRow = i
                     gameboard[i].splice((columnPick -1), 1, whosPlaying())
-                    alert("your choice is " + (gameboard[currentRow][currentIndex + 1]))
+                    alert(whosPlaying() + " choice is " + (gameboard[currentRow][currentIndex + 1]))
                     horizontalCheck()
                     verticalCheck()
                     downrightCheck()
@@ -82,16 +120,16 @@ function placeToken() {
                 }
              }
         else {(alert("Column Full"))
+        // for 2P does not swapTurns()
                 return}
         }
 };
 
-
-
 // WIN CHECKERS
+// a for loop evaluates a section of the matrix, moving through it and seeing if the 3 ahead match.
 
 function findFour(w,x,y,z) {
-    // Checks first cell against player and all cells match
+    // Checks first cell against current player and all cells match that player
     return ((w == whosPlaying()) && (w === x) && (w === y) && (w === z));
 };
 
@@ -99,7 +137,7 @@ function winDeclared() {
     isThereAWinner = true
     console.log(whosPlaying() + " wins!")
     console.log(gameboard)
-}
+};
 
 // upright to check: 1,2 3,4 2,3 3,4 5,4 4,5
 function uprightCheck() {
@@ -148,5 +186,5 @@ function horizontalCheck() {
     }
 };
 
-twoPlayerPickSides()
-beginTwoPlayerGame();
+oneOrTwoPlayerGame()
+initializeGame()
