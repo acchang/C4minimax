@@ -1,4 +1,4 @@
-var gameboard = [
+let gameboard = [
                  [1,2,3,4,5,6,7],
                  [8,9,10,11,12,13,14],
                  [15,16,17,18,19,20,21],
@@ -6,75 +6,33 @@ var gameboard = [
                  [29,30,31,32,33,34,35],
                  [36,37,38,39,40,41,42]
                 ];
-// represent this graphically
-// draw gameboard
-// every time gameboard changes, html changes
-// use a nested loop to place the token
-// if playerOne, add class; if playerTwo, add other
-// is this right, is there any other way to do it? getContext never used
 
-var playerOne
-var playerTwo
-var columnPick
-var currentIndex
-var currentRow
-var availableSpots
-var playerOneTurn = true
-var itsAOnePlayerGame = true
-var isThereAWinner = false
+let playerOne
+let playerTwo
+let columnPick
+let currentIndex
+let currentRow
+let availableSpots
+let playerOneTurn = true
+let itsAOnePlayerGame = true
+let isThereAWinner = false
 
-//Draw Board
-var tileWidth = 125;
-var tileHeight = 125;
+//Draw Board -- this should be the first thing
+//repeat this each time there is a change
+//in html build another box above, with a slider, interpret the slide into a column number
+//then maybe a radio button for the other info
 
-var canvas = document.createElement("canvas");
-canvas.width = gameboard[0].length * tileWidth;
-canvas.height = gameboard.length * tileHeight;
-document.body.appendChild(canvas);
-var context = canvas.getContext("2d");
+// let p = document.createElement("p")
 
-function drawBoard() {
-for (var a = 0; a < gameboard.length; a++) {
-    for (var b = 0; b < gameboard[0].length; b++) {
-  
-      if (a % 2 == 0) {
-        if (b % 2 == 0) {
-          context.fillStyle = "#aaaaaa";
-        } else {
-          context.fillStyle = "#888888";
-        }
-      } else {
-        if (b % 2 == 1) {
-          context.fillStyle = "#aaaaaa";
-        } else {
-          context.fillStyle = "#888888";
-        }
-      }
-      context.fillRect(b * tileWidth, a * tileHeight, tileWidth, tileHeight);
-      switch (gameboard[a][b]) {
-        case "W":
-          context.fillStyle = "#ffffff";
-          context.beginPath();
-          context.arc(b * tileWidth + tileWidth / 2, a * tileHeight + tileHeight / 2, 10, 0, Math.PI * 2, true);
-          context.closePath();
-          context.fill();
-          break;
-        case "B":
-          context.fillStyle = "#000000";
-          context.beginPath();
-          context.arc(b * tileWidth + tileWidth / 2, a * tileHeight + tileHeight / 2, 10, 0, Math.PI * 2, true);
-          context.closePath();
-          context.fill();
-          break;
-      }
-    }
-    }
-};
-
+// function drawBoard() {
+//     gameboard.forEach(row => {
+//         table.append;
+//         row.forEach(item => createTableCell(item ? 'red' : 'transparent'));
+//       };
+// }
 
 
 // Begin Game
-
 function oneOrTwoPlayerGame(){
     typeOfGame = prompt('One or Two Player')
     if (typeOfGame == "1"){
@@ -256,5 +214,4 @@ function horizontalCheck() {
     }
 };
 
-drawBoard()
 oneOrTwoPlayerGame()

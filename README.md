@@ -1,7 +1,18 @@
 # C4minimax
 1/7
-- a dumb opponent is made, today I work on the DOM
+- I finished with making a dumb opponent, today I work on the DOM
 - then a minimax with depth
+
+Struggled a bit with the DOM, asked:
+https://discord.com/channels/505093832157691914/513125308757442562/929069860397387836
+
+Considered doing it with canvas:
+https://stackoverflow.com/questions/55599165/trying-for-draft-a-6x6-game-board-with-2d-array
+
+Tried Checkers as a model:
+https://levelup.gitconnected.com/creating-a-board-game-checkers-with-javascript-ecd562f985c2
+
+
 1/6/2022
 I have 2/3 tasks left
 - create the DOM
