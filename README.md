@@ -1,5 +1,7 @@
 # C4minimax
-
+1/7
+- a dumb opponent is made, today I work on the DOM
+- then a minimax with depth
 1/6/2022
 I have 2/3 tasks left
 - create the DOM
