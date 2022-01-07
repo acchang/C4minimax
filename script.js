@@ -18,14 +18,31 @@ var playerOneTurn = true
 var itsAOnePlayerGame = true
 var isThereAWinner = false
 
+function onePlayerSimpleOrAdvanced(){
+    simpleOrAdvanced = prompt('Simple(1) or Advanced(2)')
+    if (simpleOrAdvanced == 1) {
+        play1PGame()
+    }
+    else if (simpleOrAdvanced == 2) {
+        playAdvanced1PGame()
+    }
+    else {alert("No")
+        isThereAWinner = true
+        return
+        }
+};
 
 function oneOrTwoPlayerGame(){
     typeOfGame = prompt('One or Two Player')
     if (typeOfGame == "1"){
         itsAOnePlayerGame = true
+        onePlayerPickSides()
+        onePlayerSimpleOrAdvanced()
         }
     else if (typeOfGame == "2"){
         itsAOnePlayerGame = false
+        onePlayerPickSides()
+        play2PGame()
         }
     else {alert("No")
         isThereAWinner = true
@@ -51,13 +68,12 @@ function twoPlayerPickSides() {
     playerTwo = prompt('Player Two chooses')
 };
 
-function initializeGame() {
-    if (itsAOnePlayerGame == true) {
-        onePlayerPickSides()
-        play1PGame()}
-    else if (itsAOnePlayerGame == false) {
-        twoPlayerPickSides()
-        play2PGame()}
+function playAdvanced1PGame() {
+    while (isThereAWinner == false) {
+        playerSelects1P()
+        // advancedPlayerSelects1P()
+        placeToken()
+    }
 };
 
 function play1PGame() {
@@ -99,7 +115,7 @@ function playerSelects1P() {
     findAvailableSpots()
     console.log(availableSpots)
     if (whosPlaying() == playerTwo) {
-        columnPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]}
+        columnPick = availableSpots[Math.floor(Math.ceil() * availableSpots.length)]}
     else playerSelects2P();    
 };
 
@@ -183,4 +199,3 @@ function horizontalCheck() {
 };
 
 oneOrTwoPlayerGame()
-initializeGame()
