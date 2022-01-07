@@ -13,6 +13,7 @@ var playerTwo
 var columnPick
 var currentIndex
 var currentRow
+var availableSpots
 var playerOneTurn = true
 var itsAOnePlayerGame = true
 var isThereAWinner = false
@@ -27,6 +28,7 @@ function oneOrTwoPlayerGame(){
         itsAOnePlayerGame = false
         }
     else {alert("No")
+        isThereAWinner = true
         return
         }
 };
@@ -60,14 +62,14 @@ function initializeGame() {
 
 function play1PGame() {
     while (isThereAWinner == false) {
-        playerSelectsAIGame()
+        playerSelects1P()
         placeToken()
     }
 };
 
 function play2PGame() {
     while (isThereAWinner == false) {
-        playerSelects()
+        playerSelects2P()
         placeToken()
     }
 };
@@ -78,50 +80,44 @@ function swapTurns() {
 
 // GAMEPLAY
 
-function playerSelects() {
-    columnPick = prompt(whosPlaying() +  ', choose which column 1-7')
-    // test if row 0 if occupied, if so, say not available.
-    // if gameboard[0][columnPick] == interger, alert invalid until
-    // if it's not in available spots, ask again
-};
-
-function findAvailableSpots() {
-    availableSpots = gameboard[0].map(x => (Number.isInteger(x)))
+function playerSelects2P() {
+    findAvailableSpots()
     console.log(availableSpots)
-// map is not what I want since map only uses isInterger to evaluate and I get true and falses/
-// create a function that says if X is an integer, return integer, then do a forEach
+    columnPick = prompt(whosPlaying() +  ', choose which column 1-7')
+    if (availableSpots.includes(parseInt(columnPick))) {console.log(columnPick)}
+    else {
+        alert("column full")
+        playerSelects2P()}
 };
 
-function playerSelectsAIGame() {
-    if (whosPlaying() == playerTwo) {columnPick = 6}
-    // columnPick will be random with const randomElement = array[Math.floor(Math.random() * array.length)];
-    else playerSelects();    
+// if there is a string in row[0], that column is no longer available.
+function findAvailableSpots() {
+    availableSpots = gameboard[0].filter(x => Number.isInteger(x) == true)
 };
 
+function playerSelects1P() {
+    findAvailableSpots()
+    console.log(availableSpots)
+    if (whosPlaying() == playerTwo) {
+        columnPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]}
+    else playerSelects2P();    
+};
 
 // starts from the bottom row and places token in chosen spot when there it is a number (unoccupied)
 function placeToken() {
     let i;
     for (i = 5; i > -1; i--) 
-        {console.log(gameboard[0][columnPick-1])
-         if (Number.isInteger(gameboard[0][columnPick-1]))
-            {
-                {if (Number.isInteger(gameboard[i][columnPick-1])) {
-                    currentIndex = (columnPick -1)
-                    currentRow = i
-                    gameboard[i].splice((columnPick -1), 1, whosPlaying())
-                    alert(whosPlaying() + " choice is " + (gameboard[currentRow][currentIndex + 1]))
-                    horizontalCheck()
-                    verticalCheck()
-                    downrightCheck()
-                    uprightCheck()
-                    swapTurns()
-                    return}
-                }
-             }
-        else {(alert("Column Full"))
-        // for 2P does not swapTurns()
-                return}
+        {if (Number.isInteger(gameboard[i][columnPick-1])) {
+            currentIndex = (columnPick -1)
+            currentRow = i
+            alert(whosPlaying() + " choice is " + (gameboard[currentRow][currentIndex]))
+            gameboard[i].splice((columnPick -1), 1, whosPlaying())
+            horizontalCheck()
+            verticalCheck()
+            downrightCheck()
+            uprightCheck()
+            swapTurns()
+            return}
         }
 };
 
