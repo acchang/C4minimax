@@ -1,21 +1,20 @@
-#mainTable {
-    background-color: gray;
-    width: 630px;
-    height: 540px;
-    text-align: center
-}
-
-tr {
-    background-color: lightblue;
-    width: 630px;
-    height: 90px;
-    text-align: center;
-};
-
 td {
-    background-color: pink;
+    background-color:blue;
     width: 90px;
     height: 90px;
     text-align: center;
 };
 
+td.true {
+    background-color: yellow;
+    width: 90px;
+    height: 90px;
+    text-align: center;
+};
+
+td.false {
+    background-color: red;
+    width: 90px;
+    height: 90px;
+    text-align: center;
+};

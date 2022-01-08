@@ -17,11 +17,12 @@ let playerOneTurn = true
 let itsAOnePlayerGame = true
 let isThereAWinner = false
 
-//Draw Board -- this should be the first thing
-//repeat this each time there is a change
+// Draw Board --  erase and redraw each time there is a change
+// Light up classes
+// Fix 1P v Computer
+
 //in html build another box above, with a slider, interpret the slide into a column number
 //then maybe a radio button for the other info
-
 
 let mainDiv = document.createElement("div");
 mainDiv.id = 'mainDiv';
@@ -30,7 +31,6 @@ document.body.append(mainDiv);
 let mainTable = document.createElement("table");
 mainTable.id = 'mainTable'
 mainDiv.append(mainTable)
-
 
 function drawBoard() {
     for (i=0; i<gameboard.length; i++){
@@ -46,14 +46,9 @@ function drawBoard() {
         }
 };
 
-function clearMainTable() {
-    document.body.innerHTML = ""
-};
-
 // Begin Game
 
 function oneOrTwoPlayerGame(){
-    drawBoard()
     typeOfGame = prompt('One or Two Player')
     if (typeOfGame == "1"){
         itsAOnePlayerGame = true
@@ -84,10 +79,12 @@ function twoPlayerPickSides() {
 function onePlayerSimpleOrAdvanced(){
     simpleOrAdvanced = prompt('Simple(1) or Advanced(2)')
     if (simpleOrAdvanced == 1) {
+        console.log("simple game")
         play1PGame()
     }
     else if (simpleOrAdvanced == 2) {
         playAdvanced1PGame()
+        console.log("simple game")
     }
     else {alert("No")
         isThereAWinner = true
@@ -104,6 +101,7 @@ function whosPlaying() {
 };
 
 function play1PGame() {
+    alert("1P (104) game")
     while (isThereAWinner == false) {
         playerSelects1P()
         placeToken()
@@ -119,10 +117,10 @@ function playAdvanced1PGame() {
 };
 
 function play2PGame() {
+    alert("2P game")
     while (isThereAWinner == false) {
         playerSelects2P()
         placeToken()
-        drawBoard()
     }
 };
 
@@ -134,11 +132,13 @@ function swapTurns() {
 
 function playerSelects2P() {
     findAvailableSpots()
-    console.log(availableSpots)
+    alert(whosPlaying() + " (135) " + availableSpots)
     columnPick = prompt(whosPlaying() +  ', choose which column 1-7')
-    if (availableSpots.includes(parseInt(columnPick))) {console.log(columnPick)}
+    if (availableSpots.includes(parseInt(columnPick))) 
+        {alert("(137) " + columnPick)}
+        return
     else {
-        alert("column full")
+        alert("not available")
         playerSelects2P()}
 };
 
@@ -148,10 +148,14 @@ function findAvailableSpots() {
 };
 
 function playerSelects1P() {
+    alert("here is 1P (149)")
     findAvailableSpots()
-    console.log(availableSpots)
+    alert(whosPlaying() + " (151) " + availableSpots)
     if (whosPlaying() == playerTwo) {
-        columnPick = availableSpots[Math.floor(Math.ceil() * availableSpots.length)]}
+        columnPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]
+        alert(whosPlaying() + " plays (153) " + columnPick)
+        return
+    }
     else playerSelects2P();    
 };
 
@@ -162,8 +166,9 @@ function placeToken() {
         {if (Number.isInteger(gameboard[i][columnPick-1])) {
             currentIndex = (columnPick -1)
             currentRow = i
-            alert(whosPlaying() + " choice is " + (gameboard[currentRow][currentIndex]))
+            alert(whosPlaying() + " (166, placing) choice is " + (gameboard[currentRow][currentIndex]))
             gameboard[i].splice((columnPick -1), 1, whosPlaying())
+            alert(whosPlaying() + " (168) places " + columnPick)
 
             horizontalCheck()
             verticalCheck()
@@ -171,7 +176,8 @@ function placeToken() {
             uprightCheck()
 
             swapTurns()
-            return}
+            alert("Swapped to (176) " + whosPlaying())}
+            return
         }
 };
 
@@ -181,6 +187,7 @@ function placeToken() {
 
 function findFour(w,x,y,z) {
     // Checks first cell against current player and all cells match that player
+    // this means the check is only for one side! can't do it this way
     return ((w == whosPlaying()) && (w === x) && (w === y) && (w === z));
 };
 
@@ -237,5 +244,5 @@ function horizontalCheck() {
     }
 };
 
-
+drawBoard()
 oneOrTwoPlayerGame()
