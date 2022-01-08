@@ -22,17 +22,52 @@ let isThereAWinner = false
 //in html build another box above, with a slider, interpret the slide into a column number
 //then maybe a radio button for the other info
 
-// let p = document.createElement("p")
+
+let mainDiv = document.createElement("div");
+mainDiv.id = 'mainDiv';
+document.body.append(mainDiv);
+
+let mainTable = document.createElement("table");
+mainTable.id = 'mainTable'
+mainDiv.append(mainTable)
+
+
+function createTableRow() {
+    let row = document.createElement("tr")
+    row.innerHTML = "Row";
+    mainTable.append(row)
+  };
+
+function createTableCell() {
+    let cell = document.createElement("td")
+    row.innerHTML = "Cell";
+    row.append(cell)
+    };
+
+function drawBoard() {
+    // let rower = 
+    gameboard.forEach(x => {
+        createTableRow(x)})
+
+    // rower.forEach(item => {createTableCell(item)})
+};
+
+drawBoard() 
+
+// body.append(mainTable)
+// mainDiv.innerHTML = gameboard;
+// let tableRow = document.createElement("tr");
+// let endRow = document.createElement("br");
+// let mainTable = document.getElementById("mainTable");
+// mainTable.setAttribute("id","mainTable")
 
 // function drawBoard() {
-//     gameboard.forEach(row => {
-//         table.append;
-//         row.forEach(item => createTableCell(item ? 'red' : 'transparent'));
-//       };
-// }
-
+//     gameboard.forEach(tableRow => 
+//         mainTable.append(tableRow))
+// };
 
 // Begin Game
+
 function oneOrTwoPlayerGame(){
     typeOfGame = prompt('One or Two Player')
     if (typeOfGame == "1"){
@@ -42,7 +77,7 @@ function oneOrTwoPlayerGame(){
         }
     else if (typeOfGame == "2"){
         itsAOnePlayerGame = false
-        onePlayerPickSides()
+        twoPlayerPickSides()
         play2PGame()
         }
     else {alert("No")
@@ -214,4 +249,4 @@ function horizontalCheck() {
     }
 };
 
-oneOrTwoPlayerGame()
+// oneOrTwoPlayerGame()

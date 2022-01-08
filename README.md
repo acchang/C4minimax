@@ -3,6 +3,9 @@
 - I finished with making a dumb opponent, today I work on the DOM
 - then a minimax with depth
 
+Swapped all the var for let (I always forget) Let is block scope so limits misuse.
+https://codeburst.io/javascript-var-let-or-const-which-one-should-you-use-2fd521b050fa
+
 Struggled a bit with the DOM, asked:
 https://discord.com/channels/505093832157691914/513125308757442562/929069860397387836
 
