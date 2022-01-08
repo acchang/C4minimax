@@ -1,21 +1,21 @@
 #mainTable {
     background-color: gray;
-    width: 420px;
-    height: 360px;
+    width: 630px;
+    height: 540px;
     text-align: center
 }
 
 tr {
-    background-color: blue;
-    width: 420px;
-    height: 60px;
+    background-color: lightblue;
+    width: 630px;
+    height: 90px;
     text-align: center;
 };
 
 td {
     background-color: pink;
-    width: 60px;
-    height: 60px;
+    width: 90px;
+    height: 90px;
     text-align: center;
 };
 

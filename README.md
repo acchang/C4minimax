@@ -1,4 +1,13 @@
 # C4minimax
+
+1/8
+figuring out how to translate the array into a graphic was hard but I figured it out.
+Now the issue is:
+
+(1) getting the board to refresh (delete the old one and update) instead of simply concatenating a new one.
+
+(2) drawing the board on each turn instead of it missing until the end.
+
 1/7
 - I finished with making a dumb opponent, today I work on the DOM
 - then a minimax with depth

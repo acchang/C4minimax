@@ -32,43 +32,28 @@ mainTable.id = 'mainTable'
 mainDiv.append(mainTable)
 
 
-function createTableRow() {
-    let row = document.createElement("tr")
-    row.innerHTML = "Row";
-    mainTable.append(row)
-  };
-
-function createTableCell() {
-    let cell = document.createElement("td")
-    row.innerHTML = "Cell";
-    row.append(cell)
-    };
-
 function drawBoard() {
-    // let rower = 
-    gameboard.forEach(x => {
-        createTableRow(x)})
+    for (i=0; i<gameboard.length; i++){
+            let row = document.createElement("tr")
+            mainTable.append(row)
 
-    // rower.forEach(item => {createTableCell(item)})
+                for (j=0; j<gameboard[i].length; j++){
+                    let cell = document.createElement("td")
+                    cell.innerHTML = gameboard[i][j]
+                    cell.setAttribute('class', gameboard[i][j])
+                    row.append(cell)
+            }
+        }
 };
 
-drawBoard() 
-
-// body.append(mainTable)
-// mainDiv.innerHTML = gameboard;
-// let tableRow = document.createElement("tr");
-// let endRow = document.createElement("br");
-// let mainTable = document.getElementById("mainTable");
-// mainTable.setAttribute("id","mainTable")
-
-// function drawBoard() {
-//     gameboard.forEach(tableRow => 
-//         mainTable.append(tableRow))
-// };
+function clearMainTable() {
+    document.body.innerHTML = ""
+};
 
 // Begin Game
 
 function oneOrTwoPlayerGame(){
+    drawBoard()
     typeOfGame = prompt('One or Two Player')
     if (typeOfGame == "1"){
         itsAOnePlayerGame = true
@@ -137,6 +122,7 @@ function play2PGame() {
     while (isThereAWinner == false) {
         playerSelects2P()
         placeToken()
+        drawBoard()
     }
 };
 
@@ -178,10 +164,12 @@ function placeToken() {
             currentRow = i
             alert(whosPlaying() + " choice is " + (gameboard[currentRow][currentIndex]))
             gameboard[i].splice((columnPick -1), 1, whosPlaying())
+
             horizontalCheck()
             verticalCheck()
             downrightCheck()
             uprightCheck()
+
             swapTurns()
             return}
         }
@@ -249,4 +237,5 @@ function horizontalCheck() {
     }
 };
 
-// oneOrTwoPlayerGame()
+
+oneOrTwoPlayerGame()
