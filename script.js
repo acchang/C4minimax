@@ -19,8 +19,8 @@ let isThereAWinner = false
 
 // Draw Board -- 
 // show before 
-// erase and redraw each time there is a change
-// Light up classes
+// erase and redraw each time there is a change (prompt freezes the DOM, use async or change input)
+// Light up classes // this will require the marker in the array to change.
 
 //in html build another box above, with a slider, interpret the slide into a column number
 //then maybe a radio button for the other info
@@ -155,6 +155,13 @@ function playerSelects1P() {
     else {playerSelects2P()}
 };    
 
+function tokenClassesForGameboard() {
+    if(playerOneTurn) {
+    return "One"
+    } else {
+    return "Two"
+    }
+};
 
 // starts from the bottom row and places token in chosen spot when there it is a number (unoccupied)
 function placeToken() {
@@ -164,7 +171,9 @@ function placeToken() {
             currentIndex = (columnPick -1)
             currentRow = i
             alert(whosPlaying() + " choice is " + columnPick)
-            gameboard[i].splice((columnPick -1), 1, whosPlaying())
+
+// I need to splice in something else here.
+            gameboard[i].splice((columnPick -1), 1, tokenClassesForGameboard())
 
             horizontalCheck()
             verticalCheck()
@@ -184,7 +193,7 @@ function placeToken() {
 function findFour(w,x,y,z) {
     // Checks first cell against current player and all cells match that player
     // this means the check is only for one side! can't do it this way
-    return ((w == whosPlaying()) && (w === x) && (w === y) && (w === z));
+    return ((w == tokenClassesForGameboard()) && (w === x) && (w === y) && (w === z));
 };
 
 function winDeclared() {
@@ -242,3 +251,4 @@ function horizontalCheck() {
 
 drawBoard()
 oneOrTwoPlayerGame()
+drawBoard()

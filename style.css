@@ -1,20 +1,18 @@
 td {
-    background-color:blue;
+    background-color:lightblue;
     width: 90px;
     height: 90px;
     text-align: center;
 };
 
-td.true {
+td.one {
     background-color: yellow;
-    width: 90px;
-    height: 90px;
-    text-align: center;
+    text-align: right;
 };
 
-td.false {
+td.two {
     background-color: red;
-    width: 90px;
-    height: 90px;
-    text-align: center;
+    text-align: left;
 };
+
+
