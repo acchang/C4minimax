@@ -17,9 +17,10 @@ let playerOneTurn = true
 let itsAOnePlayerGame = true
 let isThereAWinner = false
 
-// Draw Board --  erase and redraw each time there is a change
+// Draw Board -- 
+// show before 
+// erase and redraw each time there is a change
 // Light up classes
-// Fix 1P v Computer
 
 //in html build another box above, with a slider, interpret the slide into a column number
 //then maybe a radio button for the other info
@@ -79,12 +80,10 @@ function twoPlayerPickSides() {
 function onePlayerSimpleOrAdvanced(){
     simpleOrAdvanced = prompt('Simple(1) or Advanced(2)')
     if (simpleOrAdvanced == 1) {
-        console.log("simple game")
         play1PGame()
     }
     else if (simpleOrAdvanced == 2) {
         playAdvanced1PGame()
-        console.log("simple game")
     }
     else {alert("No")
         isThereAWinner = true
@@ -101,7 +100,6 @@ function whosPlaying() {
 };
 
 function play1PGame() {
-    alert("1P (104) game")
     while (isThereAWinner == false) {
         playerSelects1P()
         placeToken()
@@ -117,7 +115,6 @@ function playAdvanced1PGame() {
 };
 
 function play2PGame() {
-    alert("2P game")
     while (isThereAWinner == false) {
         playerSelects2P()
         placeToken()
@@ -132,11 +129,9 @@ function swapTurns() {
 
 function playerSelects2P() {
     findAvailableSpots()
-    alert(whosPlaying() + " (135) " + availableSpots)
     columnPick = prompt(whosPlaying() +  ', choose which column 1-7')
     if (availableSpots.includes(parseInt(columnPick))) 
-        {alert("(137) " + columnPick)}
-        return
+        {console.log(columnPick)}
     else {
         alert("not available")
         playerSelects2P()}
@@ -147,17 +142,19 @@ function findAvailableSpots() {
     availableSpots = gameboard[0].filter(x => Number.isInteger(x) == true)
 };
 
+
+
 function playerSelects1P() {
-    alert("here is 1P (149)")
-    findAvailableSpots()
-    alert(whosPlaying() + " (151) " + availableSpots)
+    // alert("here is 1P (149)")
+    // alert(whosPlaying() + " (151) " + availableSpots)
     if (whosPlaying() == playerTwo) {
+        findAvailableSpots()
         columnPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]
-        alert(whosPlaying() + " plays (153) " + columnPick)
         return
     }
-    else playerSelects2P();    
-};
+    else {playerSelects2P()}
+};    
+
 
 // starts from the bottom row and places token in chosen spot when there it is a number (unoccupied)
 function placeToken() {
@@ -166,9 +163,8 @@ function placeToken() {
         {if (Number.isInteger(gameboard[i][columnPick-1])) {
             currentIndex = (columnPick -1)
             currentRow = i
-            alert(whosPlaying() + " (166, placing) choice is " + (gameboard[currentRow][currentIndex]))
+            alert(whosPlaying() + " choice is " + columnPick)
             gameboard[i].splice((columnPick -1), 1, whosPlaying())
-            alert(whosPlaying() + " (168) places " + columnPick)
 
             horizontalCheck()
             verticalCheck()
@@ -176,8 +172,8 @@ function placeToken() {
             uprightCheck()
 
             swapTurns()
-            alert("Swapped to (176) " + whosPlaying())}
             return
+        }
         }
 };
 
