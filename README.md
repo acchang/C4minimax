@@ -9,7 +9,10 @@ Now the issue is:
 
      this is partly due to my use of prompts, which prevents the user from accessing the rest of the program's interface until the dialog box is closed
      https://stackoverflow.com/questions/55310262/how-to-fix-access-dom-in-a-loop-using-prompt
-     So either I learn to use async and promises or refactor how I take input
+     So either I learn to use async and promises or refactor how I take input with radials or text input (probably better)
+     * radios for type of game
+     * textinput for choosing column 
+     * once that's done switch it for a slider, mouseover lights up the box)
      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 
 * I made some changes today to fix some issues, then I had to rewind them. Took me all day. (see Twitter for details)

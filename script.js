@@ -18,9 +18,7 @@ let itsAOnePlayerGame = true
 let isThereAWinner = false
 
 // Draw Board -- 
-// show before 
 // erase and redraw each time there is a change (prompt freezes the DOM, use async or change input)
-// Light up classes // this will require the marker in the array to change.
 
 //in html build another box above, with a slider, interpret the slide into a column number
 //then maybe a radio button for the other info
@@ -28,6 +26,45 @@ let isThereAWinner = false
 let mainDiv = document.createElement("div");
 mainDiv.id = 'mainDiv';
 document.body.append(mainDiv);
+
+// Draw selector
+// make clear, mouseover with token color
+let selectorHolder = document.createElement("div") 
+selectorHolder.id ='selectorHolder'
+mainDiv.append(selectorHolder)
+
+let selectorTable = document.createElement("table") 
+selectorTable.id ='selectorTable'
+selectorHolder.append(selectorTable)
+
+let selectorRow = document.createElement("tr") 
+selectorRow.id ='selectorRow'
+selectorTable.append(selectorRow)
+
+function drawSelectorCell() {  
+    for (i=0; i<7; i++){
+        let selectorCell = document.createElement("td") 
+        selectorCell.setAttribute('class', 'selectorCell')
+        selectorCell.setAttribute('id', 'selectorCell'+[i])
+
+        selectorCell.addEventListener("mouseover", function(event) {
+            // console.log(selectorCell.id) 
+            selectorCell.setAttribute('background-color','pink')
+            // -- this works, I just need it to light up
+        })
+
+        selectorCell.onclick = function(){
+            columnPick = i
+            console.log("CP is" + selectorCell.id)
+        }
+
+        selectorRow.append(selectorCell)
+        }
+};
+
+drawSelectorCell()
+
+// Draw Main Gameboard
 
 let mainTable = document.createElement("table");
 mainTable.id = 'mainTable'
@@ -40,56 +77,120 @@ function drawBoard() {
 
                 for (j=0; j<gameboard[i].length; j++){
                     let cell = document.createElement("td")
-                    cell.innerHTML = gameboard[i][j]
                     cell.setAttribute('class', gameboard[i][j])
                     row.append(cell)
             }
         }
 };
 
+//Draw gameTypeDropDownArea
+
+let gameTypeDropDownArea = document.createElement("div") 
+gameTypeDropDownArea.id = 'gameTypeDropDownArea'
+mainDiv.append(gameTypeDropDownArea);
+
+let dropdown = document.createElement("div") 
+gameTypeDropDownArea.append(dropdown);
+
+let gameTypeButton = document.createElement('button') 
+gameTypeButton.innerHTML = 'Type of Game?'
+gameTypeButton.setAttribute('id', 'gameTypeButton')
+gameTypeButton.setAttribute('class', 'dropbtn')
+gameTypeButton.setAttribute('onclick', toggleGameOptions())
+dropdown.append(gameTypeButton);
+
+let myDropdown = document.createElement('div') 
+myDropdown.setAttribute('id', 'myDropdown')
+myDropdown.setAttribute('class', 'dropdown-content')
+gameTypeButton.append(myDropdown);
+
+let twoPLink = document.createElement('a')
+twoPLink.setAttribute('href',"cnn.com")
+myDropdown.innerHTML = '2P'
+myDropdown.append(twoPLink);
+
+let onePEasyLink = document.createElement('a')
+onePEasyLink.setAttribute('href',"cnn.com")
+myDropdown.innerHTML = '1P Easy'
+myDropdown.append(onePEasyLink);
+
+let onePHardLink = document.createElement('a')
+onePHardLink.setAttribute('href',"cnn.com")
+myDropdown.innerHTML = '1P Hard'
+myDropdown.append(onePHardLink);
+
+function toggleGameOptions() {
+    console.log("toggle")
+    document.getElementById("myDropdown").classList.toggle("show");
+  }
+
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+
+  // Close the dropdown menu if the user clicks outside of it
+  window.onclick = function(event) {
+    if (!event.target.matches('.dropbtn')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      var i;
+      for (i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+
+
+
+
+
+
+
+
 // Begin Game
 
-function oneOrTwoPlayerGame(){
-    typeOfGame = prompt('One or Two Player')
-    if (typeOfGame == "1"){
-        itsAOnePlayerGame = true
-        onePlayerPickSides()
-        onePlayerSimpleOrAdvanced()
-        }
-    else if (typeOfGame == "2"){
-        itsAOnePlayerGame = false
-        twoPlayerPickSides()
-        play2PGame()
-        }
-    else {alert("No")
-        isThereAWinner = true
-        return
-        }
-};
+// function oneOrTwoPlayerGame(){
+//     typeOfGame = prompt('One or Two Player')
+//     if (typeOfGame == "1"){
+//         itsAOnePlayerGame = true
+//         onePlayerPickSides()
+//         onePlayerSimpleOrAdvanced()
+//         }
+//     else if (typeOfGame == "2"){
+//         itsAOnePlayerGame = false
+//         twoPlayerPickSides()
+//         play2PGame()
+//         }
+//     else {alert("No")
+//         isThereAWinner = true
+//         return
+//         }
+// };
 
-function onePlayerPickSides(){
-    playerOne = prompt('Your name')
-    playerTwo = 'Computer'
-};
+// function onePlayerPickSides(){
+//     playerOne = prompt('Your name')
+//     playerTwo = 'Computer'
+// };
 
-function twoPlayerPickSides() {
-    playerOne = prompt('Player One name')
-    playerTwo = prompt('Player Two name')
-};
+// function twoPlayerPickSides() {
+//     playerOne = prompt('Player One name')
+//     playerTwo = prompt('Player Two name')
+// };
 
-function onePlayerSimpleOrAdvanced(){
-    simpleOrAdvanced = prompt('Simple(1) or Advanced(2)')
-    if (simpleOrAdvanced == 1) {
-        play1PGame()
-    }
-    else if (simpleOrAdvanced == 2) {
-        playAdvanced1PGame()
-    }
-    else {alert("No")
-        isThereAWinner = true
-        return
-        }
-};
+// function onePlayerSimpleOrAdvanced(){
+//     simpleOrAdvanced = prompt('Simple(1) or Advanced(2)')
+//     if (simpleOrAdvanced == 1) {
+//         play1PGame()
+//     }
+//     else if (simpleOrAdvanced == 2) {
+//         playAdvanced1PGame()
+//     }
+//     else {alert("No")
+//         isThereAWinner = true
+//         return
+//         }
+// };
 
 function whosPlaying() {
     if(playerOneTurn) {
@@ -99,20 +200,20 @@ function whosPlaying() {
     }
 };
 
-function play1PGame() {
-    while (isThereAWinner == false) {
-        playerSelects1P()
-        placeToken()
-    }
-};
+// function play1PGame() {
+//     while (isThereAWinner == false) {
+//         playerSelects1P()
+//         placeToken()
+//     }
+// };
 
-function playAdvanced1PGame() {
-    while (isThereAWinner == false) {
-        playerSelects1P()
-        // advancedPlayerSelects1P()
-        placeToken()
-    }
-};
+// function playAdvanced1PGame() {
+//     while (isThereAWinner == false) {
+//         playerSelects1P()
+//         // advancedPlayerSelects1P()
+//         placeToken()
+//     }
+// };
 
 function play2PGame() {
     while (isThereAWinner == false) {
@@ -120,6 +221,7 @@ function play2PGame() {
         placeToken()
     }
 };
+
 
 function swapTurns() {
     playerOneTurn = !playerOneTurn
@@ -249,6 +351,3 @@ function horizontalCheck() {
     }
 };
 
-drawBoard()
-oneOrTwoPlayerGame()
-drawBoard()
