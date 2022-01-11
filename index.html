@@ -7,8 +7,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Connect Four Title </h1>
+<h1>Connect Four </h1>
 
+
+<form>
+    <div>  
+      Select:
+      <input type="radio" id="1PEasy"
+       name="gameType" value="1PEasy" onClick="validateRadio()">
+      <label for="gameType1">1P Easy</label>
+  
+      <input type="radio" id="1PHard"
+       name="gameType" value="1PHard" onClick="validateRadio()">
+      <label for="gameType2">1P Hard</label>
+
+      <input type="radio" id="2P"
+      name="gameType" value="2P" onClick="validateRadio()">
+     <label for="gameType3">2P</label>
+    </div>
+  </form>
+<br>
 
 <!-- Tip to scale screen even for mobile
 <meta name = "viewport" content = "initial-scale-1, width=device-width"> -->

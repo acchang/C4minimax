@@ -1,23 +1,61 @@
+form {
+    font-size: 1.5em;
+}
+
+
+.selectorTable {
+    background-color: green;
+    width:640px;
+    height:90px;
+}
+
+.selectorCell {
+    background-color: lightblue;
+    width: 90px;
+    height: 90px;
+}
+
+
+.redBG {
+    background-color: red;
+
+}
+
+.selectorCell .innerSelectorCell  {
+    background-color: white;
+    margin: auto;
+    text-align: center;
+    width: 73px;
+    height: 73px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
 
 
 #mainTable {
     background-color: blue;
-    width:630px;
-    height:540px;
+    width:640px;
+    height:590px;
 }
 
-td.selectorCell {
-    background-color: brown;
+/* what makes the gridlines go away? */
+#mainTable .outerCell {
+    background-color: blue;
     width: 90px;
     height: 90px;
-    border-radius: 50%;
+    text-align: center;
 }
 
-td {
+/* why doesn't innerCell work here when it does for outerCell?? */
+#mainTable div {
+    margin: auto;
+    text-align: center;
     background-color: whitesmoke;
+    width: 73px;
+    height: 73px;
     border-radius: 50%;
-    width: 90px;
-    height: 90px;
+    display: inline-block;
 }
 
 td.One {
@@ -30,48 +68,25 @@ td.Two {
     border-radius: 50%;
 }
 
-
-/* Dropdown Button */
-.dropbtn {
-    background-color: hsl(202, 7%, 54%);
-    color: white;
-    padding: 16px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
+/* how do I format the radios correctly? */
+#gameTypeChoiceArea {
+    background-color: pink;
+    width:640px;
+    height:120px;
+    text-align: left;
 }
-  
-  /* Dropdown button on hover & focus */
-  .dropbtn:hover, .dropbtn:focus {
-    background-color: #696e72;
-  }
-  
-  /* The container <div> - needed to position the dropdown content */
-  .dropdown {
-    position: relative;
+
+#twoPlayerChoiceDiv {
+    width:320px;
+    background-color: green;
+    display: inline;
+}
+
+#2P {
     display: inline-block;
-  }
-  
-  /* Dropdown Content (Hidden by Default) */
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-  }
-  
-  /* Links inside the dropdown */
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-  
-  /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: #ddd}
-  
-  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-  .show {display:block;}
+}
+
+input[type=radio] {
+    display: inline;
+    border: 0px;
+}

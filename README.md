@@ -1,5 +1,14 @@
 # C4minimax
 
+1/9 
+Dangit, I hate CSS. I don't feel like I'm learning anything. It's just a matter of testing code changes to understand how the system interprets commands. I feel like I got nothing done today. It's all just styling. I can style, but this is like doing style with a spatula. It's just mechanical, learing about technique.
+
+I spent the day switching the JS only code using prompts to constructing the DOM. But then I ran into issues with using a function that accesses an element in the DOM before it had been constructed.
+
+https://discord.com/channels/505093832157691914/513125308757442562/929821898404139040
+https://stackoverflow.com/questions/14028959/why-does-jquery-or-a-dom-method-such-as-getelementbyid-not-find-the-element
+
+
 1/8
 figuring out how to translate the array into a graphic was hard but I figured it out.
 Now the issue is:

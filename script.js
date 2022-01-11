@@ -17,45 +17,43 @@ let playerOneTurn = true
 let itsAOnePlayerGame = true
 let isThereAWinner = false
 
-// Draw Board -- 
-// erase and redraw each time there is a change (prompt freezes the DOM, use async or change input)
-
-//in html build another box above, with a slider, interpret the slide into a column number
-//then maybe a radio button for the other info
-
 let mainDiv = document.createElement("div");
-mainDiv.id = 'mainDiv';
+mainDiv.setAttribute('class', 'mainDiv')
 document.body.append(mainDiv);
 
-// Draw selector
-// make clear, mouseover with token color
 let selectorHolder = document.createElement("div") 
-selectorHolder.id ='selectorHolder'
+selectorHolder.setAttribute('class', 'selectorHolder')
 mainDiv.append(selectorHolder)
 
 let selectorTable = document.createElement("table") 
-selectorTable.id ='selectorTable'
+selectorTable.setAttribute('class', 'selectorTable')
 selectorHolder.append(selectorTable)
 
 let selectorRow = document.createElement("tr") 
-selectorRow.id ='selectorRow'
+selectorRow.setAttribute('class', 'selectorRow')
 selectorTable.append(selectorRow)
 
 function drawSelectorCell() {  
     for (i=0; i<7; i++){
         let selectorCell = document.createElement("td") 
         selectorCell.setAttribute('class', 'selectorCell')
-        selectorCell.setAttribute('id', 'selectorCell'+[i])
 
-        selectorCell.addEventListener("mouseover", function(event) {
-            // console.log(selectorCell.id) 
-            selectorCell.setAttribute('background-color','pink')
-            // -- this works, I just need it to light up
+        let innerSelectorCell = document.createElement("div") 
+        innerSelectorCell.setAttribute('class', 'innerSelectorCell')
+        innerSelectorCell.setAttribute('id', [i])
+        selectorCell.append(innerSelectorCell)
+        
+        innerSelectorCell.addEventListener("mouseover", function(event) {
+            innerSelectorCell.classList.add('redBG')
         })
 
-        selectorCell.onclick = function(){
-            columnPick = i
-            console.log("CP is" + selectorCell.id)
+        innerSelectorCell.addEventListener("mouseout", function(event) {
+            innerSelectorCell.classList.remove('redBG')
+        })
+
+        innerSelectorCell.onclick = function(){
+            columnPick = this.id + 1
+            console.log(parseInt(this.id)+1)
         }
 
         selectorRow.append(selectorCell)
@@ -76,75 +74,94 @@ function drawBoard() {
             mainTable.append(row)
 
                 for (j=0; j<gameboard[i].length; j++){
-                    let cell = document.createElement("td")
-                    cell.setAttribute('class', gameboard[i][j])
-                    row.append(cell)
+                    let outerCell = document.createElement('td')
+                    outerCell.setAttribute('class', 'outerCell')
+                    row.append(outerCell)
+                    let innerCell = document.createElement('div')
+                    innerCell.setAttribute('class', 'innerCell')
+                    innerCell.setAttribute('class', gameboard[i][j])
+                    innerCell.setAttribute('innerHTML', gameboard[i][j])
+                    outerCell.append(innerCell)
             }
         }
 };
 
+drawBoard()
+
 //Draw gameTypeDropDownArea
+// to avoid the show function being written for a button that won't exist when the function is parsed I used radio buttons
 
-let gameTypeDropDownArea = document.createElement("div") 
-gameTypeDropDownArea.id = 'gameTypeDropDownArea'
-mainDiv.append(gameTypeDropDownArea);
+let gameInfoAreaDiv = document.createElement("div") 
+gameInfoAreaDiv.id = 'gameInfoArea'
+mainDiv.append(gameInfoAreaDiv);
 
-let dropdown = document.createElement("div") 
-gameTypeDropDownArea.append(dropdown);
+let gameTypeDiv = document.createElement("div") 
+gameTypeDiv.id = 'gameTypeDiv'
+gameInfoAreaDiv.append(gameTypeDiv);
 
-let gameTypeButton = document.createElement('button') 
-gameTypeButton.innerHTML = 'Type of Game?'
-gameTypeButton.setAttribute('id', 'gameTypeButton')
-gameTypeButton.setAttribute('class', 'dropbtn')
-gameTypeButton.setAttribute('onclick', toggleGameOptions())
-dropdown.append(gameTypeButton);
-
-let myDropdown = document.createElement('div') 
-myDropdown.setAttribute('id', 'myDropdown')
-myDropdown.setAttribute('class', 'dropdown-content')
-gameTypeButton.append(myDropdown);
-
-let twoPLink = document.createElement('a')
-twoPLink.setAttribute('href',"cnn.com")
-myDropdown.innerHTML = '2P'
-myDropdown.append(twoPLink);
-
-let onePEasyLink = document.createElement('a')
-onePEasyLink.setAttribute('href',"cnn.com")
-myDropdown.innerHTML = '1P Easy'
-myDropdown.append(onePEasyLink);
-
-let onePHardLink = document.createElement('a')
-onePHardLink.setAttribute('href',"cnn.com")
-myDropdown.innerHTML = '1P Hard'
-myDropdown.append(onePHardLink);
-
-function toggleGameOptions() {
-    console.log("toggle")
-    document.getElementById("myDropdown").classList.toggle("show");
-  }
-
-/* When the user clicks on the button,
-toggle between hiding and showing the dropdown content */
-
-  // Close the dropdown menu if the user clicks outside of it
-  window.onclick = function(event) {
-    if (!event.target.matches('.dropbtn')) {
-      var dropdowns = document.getElementsByClassName("dropdown-content");
-      var i;
-      for (i = 0; i < dropdowns.length; i++) {
-        var openDropdown = dropdowns[i];
-        if (openDropdown.classList.contains('show')) {
-          openDropdown.classList.remove('show');
-        }
-      }
-    }
-  }
+let gameTypeRadioForm = document.createElement("form")
+gameTypeRadioForm.id = 'gameTypeRadioForm'
+gameTypeDiv.append(gameTypeRadioForm);
 
 
+let twoPlayerChoiceDiv = document.createElement('div') 
+twoPlayerChoiceDiv.setAttribute('id', 'twoPlayerChoiceDiv')
+gameTypeRadioForm.append(twoPlayerChoiceDiv)
+
+let twoPlayerInput = document.createElement('input') 
+twoPlayerInput.setAttribute('type', 'radio')
+twoPlayerInput.setAttribute('id', '2P')
+twoPlayerInput.setAttribute('name', 'gameType')
+twoPlayerInput.setAttribute('value', '2 Player')
+twoPlayerChoiceDiv.append(twoPlayerInput)
+
+let twoPlayerLabel = document.createElement('label')
+twoPlayerLabel.setAttribute('for', '2P')
+twoPlayerLabel.innerHTML = '2P'
+twoPlayerChoiceDiv.append(twoPlayerLabel)
 
 
+let onePlayerEasyDiv = document.createElement('div') 
+gameTypeRadioForm.append(onePlayerEasyDiv)
 
+let onePlayerEasyInput = document.createElement('input') 
+onePlayerEasyInput.setAttribute('type', 'radio')
+onePlayerEasyInput.setAttribute('id', '1PE')
+onePlayerEasyInput.setAttribute('name', 'gameType')
+onePlayerEasyInput.setAttribute('value', '1 Player Easy')
+onePlayerEasyDiv.append(onePlayerEasyInput)
+
+let onePlayerEasyLabel = document.createElement('label')
+onePlayerEasyLabel.setAttribute('for', '1PE')
+onePlayerEasyLabel.innerHTML = '1P Easy'
+onePlayerEasyDiv.append(onePlayerEasyLabel)
+
+
+let onePlayerHardDiv = document.createElement('div') 
+gameTypeRadioForm.append(onePlayerHardDiv)
+
+let onePlayerHardInput = document.createElement('input') 
+onePlayerHardInput.setAttribute('type', 'radio')
+onePlayerHardInput.setAttribute('id', '1PH')
+onePlayerHardInput.setAttribute('name', 'gameType')
+onePlayerHardInput.setAttribute('value', '1 Player Hard')
+onePlayerHardDiv.append(onePlayerHardInput)
+
+let onePlayerHardLabel = document.createElement('label')
+onePlayerHardLabel.setAttribute('for', '1PE')
+onePlayerHardLabel.innerHTML = '1P Hard'
+onePlayerHardDiv.append(onePlayerHardLabel)
+
+
+function validateRadio() {
+
+    play2PGame()
+        // var ele = document.getElementsByName('gameType');    
+    //         for(i = 0; i < ele.length; i++) {
+    //             if(ele[i].checked)
+    //             alert(ele[i].value)
+    //         }
+};
 
 
 
