@@ -1,16 +1,28 @@
+.header {
+    width:640px;
+    height:30px;
+    display: flex;
+    justify-content: space-between;
+    background-color: lightblue;
+}
+
+.announcements {
+    font-size: 1.5em;
+}
+
 form {
     font-size: 1.5em;
 }
 
 
 .selectorTable {
-    background-color: white;
+    background-color: whitesmoke;
     width:640px;
     height:90px;
 }
 
 .selectorCell {
-    background-color: white;
+    background-color: whitesmoke;
     width: 90px;
     height: 90px;
     text-align: center;
@@ -27,7 +39,7 @@ form {
 
 
 .whiteBG{
-    background-color: white;
+    background-color: whitesmoke;
 }
 
 .redBG {
@@ -37,13 +49,6 @@ form {
 .yellowBG{
     background-color: yellow;
 }
-
-
-/* .selectorCell .innerSelectorCell:hover {
-    background-color: red;
-  } */
-
-
 
 
 
@@ -72,11 +77,11 @@ form {
 }
 
 /* why can't I use class here? */
-.One {
+.Yellow {
     background-color: yellow;
 }
 
-.Two {
+.Red {
     background-color: red;
 }
 

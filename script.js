@@ -1,3 +1,15 @@
+// Try to do these
+// (3) limit if trying to click on occupied column
+// (4) fix the display window to swap player
+
+// (2) change so one player, random select spot (basic AI)
+
+// ASK
+// (5) why is the order of finish wrong
+// (6) I can't blank selector table to lock everyone out if there is a win 
+
+
+
 let gameboard = [
                  [1,2,3,4,5,6,7],
                  [8,9,10,11,12,13,14],
@@ -56,11 +68,15 @@ function drawSelector() {
             }
         })
 
+        // if condition here depending on win condition and column opening
+        // if Game is not won, this is clickable
+        // if column is full, don't pass on indexPick, don't swap turn
+        // if turn swapped and a 1P game then let computer play and return control 
+
         innerSelectorCell.onclick = function(){
             indexPick = parseInt(this.id)
             console.log(indexPick)
             claimSpot()
-            swapTurns()
         }
 
         selectorRow.append(selectorCell)
@@ -68,10 +84,6 @@ function drawSelector() {
 };
 
 drawSelector()
-
-
-
-
 
 // Draw Main Gameboard
 
@@ -143,23 +155,11 @@ function resetBoard() {
        ];
 }
 
-function onePlayerPickSides(){
-    playerOne = prompt('Your name')
-    playerTwo = 'Computer'
-};
+document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
 
-function twoPlayerPickSides() {
-    playerOne = prompt('Player One name')
-    playerTwo = prompt('Player Two name')
-};
 
-function whosPlaying() {
-    if(playerOneTurn) {
-    return playerOne
-    } else {
-    return playerTwo
-    }
-};
+
+
 
 function play1PGame() {
     while (isThereAWinner == false) {
@@ -176,9 +176,10 @@ function play2PGame() {
 };
 
 function swapTurns() {
-    playerOneTurn = !playerOneTurn
     selectorTable.innerHTML = ""
     drawSelector()
+    playerOneTurn = !playerOneTurn
+    document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
 };
 
 // GAMEPLAY
@@ -211,11 +212,11 @@ function playerSelects1P() {
     else {playerSelects2P()}
 };    
 
-function tokenClassesForGameboard() {
+function whosPlaying() {
     if (playerOneTurn) {
-    return "One"
+    return "Yellow"
     } else {
-    return "Two"
+    return "Red"
     }
 };
 
@@ -225,42 +226,23 @@ function claimSpot(){
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
-            gameboard[i].splice((indexPick), 1, tokenClassesForGameboard())
-            console.log(gameboard)
-
+            gameboard[i].splice((indexPick), 1, whosPlaying())
             mainTable.innerHTML = ""
             drawBoard()
-
-            horizontalCheck()
-            verticalCheck()
-            downrightCheck()
-            uprightCheck()
-
+            checkForWinners() 
+            swapTurns()
             return
             }
         }
+    
 };
 
-
-// function placeToken() {
-//     let i;
-//     for (i = 5; i > -1; i--) 
-//         {if (Number.isInteger(gameboard[i][columnPick-1])) {
-//             currentIndex = (columnPick -1)
-//             currentRow = i
-//             alert(whosPlaying() + " choice is " + columnPick)
-
-//             gameboard[i].splice((columnPick -1), 1, tokenClassesForGameboard())
-
-//             horizontalCheck()
-//             verticalCheck()
-//             downrightCheck()
-//             uprightCheck()
-
-//             return
-//         }
-//         }
-// };
+function checkForWinners() {
+    horizontalCheck()
+    verticalCheck()
+    downrightCheck()
+    uprightCheck()
+}
 
 // WIN CHECKERS
 // a forloop evaluates a section of the matrix, moving through it and seeing if the 3 ahead match.
@@ -269,13 +251,15 @@ function claimSpot(){
 function findFour(w,x,y,z) {
     // Checks first cell against current player and all cells match that player
     // this means the check is only for one side! can't do it this way
-    return ((w == tokenClassesForGameboard()) && (w === x) && (w === y) && (w === z));
+    return ((w == whosPlaying()) && (w === x) && (w === y) && (w === z));
 };
 
 function winDeclared() {
     isThereAWinner = true
-    alert(whosPlaying() + " wins!")
-    console.log(gameboard)
+    alert("winner")
+    document.getElementsByName("announcements")[0].innerHTML = whosPlaying() + " wins!&nbsp;"
+    selectorTable.innerHTML = ""
+// same problem, swapTurns is executing before winDeclared is 
 };
 
 // upright to check: 1,2 3,4 2,3 3,4 5,4 4,5
