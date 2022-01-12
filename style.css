@@ -4,25 +4,19 @@ form {
 
 
 .selectorTable {
-    background-color: green;
+    background-color: white;
     width:640px;
     height:90px;
 }
 
 .selectorCell {
-    background-color: lightblue;
+    background-color: white;
     width: 90px;
     height: 90px;
-}
-
-
-.redBG {
-    background-color: red;
-
+    text-align: center;
 }
 
 .selectorCell .innerSelectorCell  {
-    background-color: white;
     margin: auto;
     text-align: center;
     width: 73px;
@@ -32,23 +26,42 @@ form {
 }
 
 
+.whiteBG{
+    background-color: white;
+}
 
-#mainTable {
+.redBG {
+    background-color: red;
+}
+
+.yellowBG{
+    background-color: yellow;
+}
+
+
+/* .selectorCell .innerSelectorCell:hover {
+    background-color: red;
+  } */
+
+
+
+
+
+.mainTable {
     background-color: blue;
     width:640px;
     height:590px;
 }
 
 /* what makes the gridlines go away? */
-#mainTable .outerCell {
+.outerCell {
     background-color: blue;
     width: 90px;
     height: 90px;
     text-align: center;
 }
 
-/* why doesn't innerCell work here when it does for outerCell?? */
-#mainTable div {
+.innerCell {
     margin: auto;
     text-align: center;
     background-color: whitesmoke;
@@ -58,14 +71,13 @@ form {
     display: inline-block;
 }
 
-td.One {
+/* why can't I use class here? */
+.One {
     background-color: yellow;
-    border-radius: 50%;
 }
 
-td.Two {
+.Two {
     background-color: red;
-    border-radius: 50%;
 }
 
 /* how do I format the radios correctly? */
