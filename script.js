@@ -185,7 +185,7 @@ function claimSpot(){
                     swapTurns()
                     if (itsAOnePlayerGame == true) {computerPlays()}
                     else {return}
-                }, 10)            
+                }, 240)            
             break
             }
         }
@@ -207,6 +207,7 @@ function computerPlays() {
     // else {
     // alert only happens twice if yellow wins
     // if red wins, it's proper
+    // sometimes with red win alert flashes 3x
 
     let i;
     for (i = 5; i > -1; i--) 
@@ -220,7 +221,7 @@ function computerPlays() {
                 function() {
                 swapTurns()
                 }, 
-            10)
+            240)
             break
             }
         }
