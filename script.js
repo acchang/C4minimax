@@ -74,14 +74,17 @@ function drawSelector() {
         // if turn swapped and a 1P game then let computer play and return control 
 
         innerSelectorCell.onclick = function(){
-            indexPick = parseInt(this.id)
-            console.log(indexPick)
-            claimSpot()
-        }
 
+                    indexPick = parseInt(this.id)
+                    console.log(indexPick)
+                    claimSpot()
+
+                }
+ 
         selectorRow.append(selectorCell)
         }        
 };
+
 
 drawSelector()
 
@@ -198,10 +201,7 @@ function playerSelects2P() {
         playerSelects2P()}
 };
 
-// if there is a string in row[0], that column is no longer available.
-function findAvailableSpots() {
-    availableSpots = gameboard[0].filter(x => Number.isInteger(x) == true)
-};
+
 
 function playerSelects1P() {
     if (whosPlaying() == playerTwo) {
@@ -223,6 +223,9 @@ function whosPlaying() {
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
 
 function claimSpot(){
+    findAvailableSpots()
+    if (availableSpots.includes(indexPick+1)) {
+
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
@@ -234,8 +237,20 @@ function claimSpot(){
             return
             }
         }
-    
+    }
+    else {
+        console.log(availableSpots)
+        alert("Forbidden")
+    }
+
 };
+
+// if there is a string in row[0], that column is no longer available.
+// the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
+function findAvailableSpots() {
+    availableSpots = gameboard[0].filter(x => Number.isInteger(x) == true)
+};
+
 
 function checkForWinners() {
     horizontalCheck()
