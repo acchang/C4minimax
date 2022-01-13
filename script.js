@@ -65,14 +65,14 @@ function drawSelector() {
         })
 
         innerSelectorCell.onclick = function(){
-                if (isThereAWinner == true){return}
+                if (isThereAWinner == true){
+                    alert("Select game")
+                }
                 else {
                     indexPick = parseInt(this.id)
-                    console.log(indexPick)
                     claimSpot()
                     }
         }
-
         selectorRow.append(selectorCell)
     }        
 };
@@ -183,7 +183,7 @@ function claimSpot(){
             setTimeout(
                 function() {
                     swapTurns()
-                    if (itsAOnePlayerGame == true) {computerPlays()}
+                    if (itsAOnePlayerGame == true && isThereAWinner == false) {computerPlays()}
                     else {return}
                 }, 240)            
             break
@@ -199,16 +199,6 @@ function claimSpot(){
 function computerPlays() {
     findAvailableSpots()
     indexPick = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
-    console.log(whosPlaying())
-    console.log(indexPick)
-
-    // need to put this in or else alert pops twice:
-    // if (isThereAWinner == true){return}
-    // else {
-    // alert only happens twice if yellow wins
-    // if red wins, it's proper
-    // sometimes with red win alert flashes 3x
-
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
@@ -216,7 +206,6 @@ function computerPlays() {
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
-
             setTimeout(
                 function() {
                 swapTurns()
@@ -227,7 +216,6 @@ function computerPlays() {
         }
     
 };
-
 
 // if there is a string in row[0], that column is no longer available.
 // the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
