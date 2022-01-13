@@ -1,14 +1,10 @@
-// Try to do these
-// (3) limit if trying to click on occupied column
-// (4) fix the display window to swap player
-
-// (2) change so one player, random select spot (basic AI)
-
-// ASK
-// (5) why is the order of finish wrong
-// (6) I can't blank selector table to lock everyone out if there is a win 
-
-
+// Meanwhile build a one player, random select spot (basic AI) using available spots, 
+// swap from pickspot to AIPickSpot (if 1P game)
+// build a swtch like swapturns but for game on or off with there is a winner
+// start in game off / winner until radios are pushed
+// 
+// Watch Leon Noel
+// repack meats
 
 let gameboard = [
                  [1,2,3,4,5,6,7],
@@ -25,8 +21,10 @@ let indexPick
 let availableSpots
 let gameType
 let playerOneTurn = true
-let itsAOnePlayerGame = true
-let isThereAWinner = false
+document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
+
+let itsAOnePlayerGame
+let isThereAWinner = true
 
 let mainDiv = document.createElement("div");
 mainDiv.setAttribute('class', 'mainDiv')
@@ -34,10 +32,12 @@ document.body.append(mainDiv);
 
 let selectorHolder = document.createElement("div") 
 selectorHolder.setAttribute('class', 'selectorHolder')
+selectorHolder.setAttribute('id', 'selectorHolder')
 mainDiv.append(selectorHolder)
 
 let selectorTable = document.createElement("table") 
 selectorTable.setAttribute('class', 'selectorTable')
+selectorTable.setAttribute('id', 'selectorTable')
 selectorHolder.append(selectorTable)
 
 function drawSelector() {  
@@ -68,23 +68,22 @@ function drawSelector() {
             }
         })
 
-        // if condition here depending on win condition and column opening
-        // if Game is not won, this is clickable
-        // if column is full, don't pass on indexPick, don't swap turn
-        // if turn swapped and a 1P game then let computer play and return control 
-
         innerSelectorCell.onclick = function(){
+                if (isThereAWinner == true){return}
+                else {
 
+// another if itsaOnePlayerGame == True
+// computerPlays() 
+// else {}
                     indexPick = parseInt(this.id)
                     console.log(indexPick)
                     claimSpot()
+                    }
+        }
 
-                }
- 
         selectorRow.append(selectorCell)
-        }        
+    }        
 };
-
 
 drawSelector()
 
@@ -124,27 +123,6 @@ function validateRadio() {
             }
 };
 
-function beginGame() {
-    if (gameType == "1PEasy"){
-        itsAOnePlayerGame = true
-        resetBoard()
-        onePlayerPickSides()
-        play1PGame()
-        }
-    else if (gameType == "1PHard"){
-        itsAOnePlayerGame = true
-        resetBoard()
-        onePlayerPickSides()
-        play1PGame()
-        }
-    else if (gameType == "2P"){
-        itsAOnePlayerGame = false
-        resetBoard()
-        twoPlayerPickSides()
-        play2PGame()
-        }
-};
-
 function resetBoard() {
     playerOneTurn = true
     isThereAWinner = false
@@ -156,61 +134,56 @@ function resetBoard() {
         [29,30,31,32,33,34,35],
         [36,37,38,39,40,41,42]
        ];
-}
-
-document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
-
-
-
-
-
-function play1PGame() {
-    while (isThereAWinner == false) {
-        playerSelects1P()
-        placeToken()
-    }
 };
 
-function play2PGame() {
-    while (isThereAWinner == false) {
-        playerSelects2P()
-        placeToken()
-    }
+function beginGame() {
+    isThereAWinner = false;
+    if (gameType == "1PEasy"){
+        itsAOnePlayerGame = true
+        resetBoard()
+        mainTable.innerHTML = ""
+        drawBoard()
+        }
+    else if (gameType == "1PHard"){
+        itsAOnePlayerGame = true
+        resetBoard()
+        mainTable.innerHTML = ""
+        drawBoard()
+        }
+    else if (gameType == "2P"){
+        itsAOnePlayerGame = false
+        resetBoard()
+        mainTable.innerHTML = ""
+        drawBoard()
+        }
 };
+
 
 function swapTurns() {
+    if (isThereAWinner == true) {return}
+    else {
     selectorTable.innerHTML = ""
     drawSelector()
     playerOneTurn = !playerOneTurn
     document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
+    }
 };
 
 // GAMEPLAY
 
-function playerSelects2P() {
+function computerPlays() {
     findAvailableSpots()
-
-    // put an eventListener here?
-    columnPick = prompt(whosPlaying() +  ', choose which column 1-7')
-
-
-    if (availableSpots.includes(parseInt(columnPick))) 
-        {console.log(columnPick)}
-    else {
-        alert("not available")
-        playerSelects2P()}
-};
-
-
-
-function playerSelects1P() {
-    if (whosPlaying() == playerTwo) {
-        findAvailableSpots()
-        columnPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]
-        return
-    }
-    else {playerSelects2P()}
-};    
+    indexPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]
+    gameboard[i].splice((indexPick), 1, whosPlaying())
+    mainTable.innerHTML = ""
+    drawBoard()
+    checkForWinners() 
+    setTimeout(
+        function() {
+            swapTurns()
+        }, 10)
+    return
+}
 
 function whosPlaying() {
     if (playerOneTurn) {
@@ -221,7 +194,6 @@ function whosPlaying() {
 };
 
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
-
 function claimSpot(){
     findAvailableSpots()
     if (availableSpots.includes(indexPick+1)) {
@@ -233,7 +205,12 @@ function claimSpot(){
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
-            swapTurns()
+
+            setTimeout(
+                function() {
+                    swapTurns()
+                }, 10)
+
             return
             }
         }
@@ -242,7 +219,6 @@ function claimSpot(){
         console.log(availableSpots)
         alert("Forbidden")
     }
-
 };
 
 // if there is a string in row[0], that column is no longer available.
@@ -265,19 +241,22 @@ function checkForWinners() {
 
 function findFour(w,x,y,z) {
     // Checks first cell against current player and all cells match that player
-    // this means the check is only for one side! can't do it this way
     return ((w == whosPlaying()) && (w === x) && (w === y) && (w === z));
 };
 
 function winDeclared() {
     isThereAWinner = true
-    alert("winner")
     document.getElementsByName("announcements")[0].innerHTML = whosPlaying() + " wins!&nbsp;"
-    selectorTable.innerHTML = ""
-// same problem, swapTurns is executing before winDeclared is 
+
+    setTimeout(
+        function() {
+          alert("winner")
+        }, 10)
+    
+    return
 };
 
-// upright to check: 1,2 3,4 2,3 3,4 5,4 4,5
+
 function uprightCheck() {
     for (r=5; r>2; r--) {
         for (c=0; c<4; c++){
@@ -289,7 +268,6 @@ function uprightCheck() {
     }
 };
 
-// downright to check 4,3 2,1 3,2 2,1 2,1 1, X
 function downrightCheck() {
     for (r=0; r<3; r++) {
         for (c=0; c<4; c++){
@@ -324,69 +302,3 @@ function horizontalCheck() {
     }
 };
 
-
-
-// REMOVE:
-// Draw gameTypeDropDownArea
-// to avoid the show function being written for a button that won't exist when the function is parsed I used radio buttons
-
-// let gameInfoAreaDiv = document.createElement("div") 
-// gameInfoAreaDiv.id = 'gameInfoArea'
-// mainDiv.append(gameInfoAreaDiv);
-
-// let gameTypeDiv = document.createElement("div") 
-// gameTypeDiv.id = 'gameTypeDiv'
-// gameInfoAreaDiv.append(gameTypeDiv);
-
-// let gameTypeRadioForm = document.createElement("form")
-// gameTypeRadioForm.id = 'gameTypeRadioForm'
-// gameTypeDiv.append(gameTypeRadioForm);
-
-
-// let twoPlayerChoiceDiv = document.createElement('div') 
-// twoPlayerChoiceDiv.setAttribute('id', 'twoPlayerChoiceDiv')
-// gameTypeRadioForm.append(twoPlayerChoiceDiv)
-
-// let twoPlayerInput = document.createElement('input') 
-// twoPlayerInput.setAttribute('type', 'radio')
-// twoPlayerInput.setAttribute('id', '2P')
-// twoPlayerInput.setAttribute('name', 'gameType')
-// twoPlayerInput.setAttribute('value', '2 Player')
-// twoPlayerChoiceDiv.append(twoPlayerInput)
-
-// let twoPlayerLabel = document.createElement('label')
-// twoPlayerLabel.setAttribute('for', '2P')
-// twoPlayerLabel.innerHTML = '2P'
-// twoPlayerChoiceDiv.append(twoPlayerLabel)
-
-
-// let onePlayerEasyDiv = document.createElement('div') 
-// gameTypeRadioForm.append(onePlayerEasyDiv)
-
-// let onePlayerEasyInput = document.createElement('input') 
-// onePlayerEasyInput.setAttribute('type', 'radio')
-// onePlayerEasyInput.setAttribute('id', '1PE')
-// onePlayerEasyInput.setAttribute('name', 'gameType')
-// onePlayerEasyInput.setAttribute('value', '1 Player Easy')
-// onePlayerEasyDiv.append(onePlayerEasyInput)
-
-// let onePlayerEasyLabel = document.createElement('label')
-// onePlayerEasyLabel.setAttribute('for', '1PE')
-// onePlayerEasyLabel.innerHTML = '1P Easy'
-// onePlayerEasyDiv.append(onePlayerEasyLabel)
-
-
-// let onePlayerHardDiv = document.createElement('div') 
-// gameTypeRadioForm.append(onePlayerHardDiv)
-
-// let onePlayerHardInput = document.createElement('input') 
-// onePlayerHardInput.setAttribute('type', 'radio')
-// onePlayerHardInput.setAttribute('id', '1PH')
-// onePlayerHardInput.setAttribute('name', 'gameType')
-// onePlayerHardInput.setAttribute('value', '1 Player Hard')
-// onePlayerHardDiv.append(onePlayerHardInput)
-
-// let onePlayerHardLabel = document.createElement('label')
-// onePlayerHardLabel.setAttribute('for', '1PE')
-// onePlayerHardLabel.innerHTML = '1P Hard'
-// onePlayerHardDiv.append(onePlayerHardLabel)

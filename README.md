@@ -1,5 +1,16 @@
 # C4minimax
 
+1/12
+I had these questions in recent days:
+https://stackoverflow.com/questions/70690577/why-are-my-functions-executing-out-of-order-at-the-end-of-this-connect-four-game
+
+https://www.reddit.com/r/learnprogramming/comments/s1bojo/dom_manipulationcss_bug_hunt_mouseover_adds_class/
+
+https://discord.com/channels/505093832157691914/930830274151985182
+
+https://discord.com/channels/505093832157691914/690589233919819797/930135022218932305
+
+
 1/9 
 Dangit, I hate CSS. I don't feel like I'm learning anything. It's just a matter of testing code changes to understand how the system interprets commands. I feel like I got nothing done today. It's all just styling. I can style, but this is like doing style with a spatula. It's just mechanical, learing about technique.
 
