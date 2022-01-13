@@ -1,7 +1,5 @@
-// Meanwhile build a one player, random select spot (basic AI) using available spots, 
+// Build a one player, random select spot (basic AI) using available spots, 
 // swap from pickspot to AIPickSpot (if 1P game)
-// build a swtch like swapturns but for game on or off with there is a winner
-// start in game off / winner until radios are pushed
 // 
 // Watch Leon Noel
 // repack meats
@@ -21,8 +19,6 @@ let indexPick
 let availableSpots
 let gameType
 let playerOneTurn = true
-document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
-
 let itsAOnePlayerGame
 let isThereAWinner = true
 
@@ -71,10 +67,6 @@ function drawSelector() {
         innerSelectorCell.onclick = function(){
                 if (isThereAWinner == true){return}
                 else {
-
-// another if itsaOnePlayerGame == True
-// computerPlays() 
-// else {}
                     indexPick = parseInt(this.id)
                     console.log(indexPick)
                     claimSpot()
@@ -124,8 +116,6 @@ function validateRadio() {
 };
 
 function resetBoard() {
-    playerOneTurn = true
-    isThereAWinner = false
     gameboard = [
         [1,2,3,4,5,6,7],
         [8,9,10,11,12,13,14],
@@ -133,31 +123,29 @@ function resetBoard() {
         [22,23,24,25,26,27,28],
         [29,30,31,32,33,34,35],
         [36,37,38,39,40,41,42]
-       ];
+       ]
+    mainTable.innerHTML = ""
+    drawBoard()
 };
 
 function beginGame() {
-    isThereAWinner = false;
+    isThereAWinner = false
+    playerOneTurn = true
+    document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
+
     if (gameType == "1PEasy"){
         itsAOnePlayerGame = true
         resetBoard()
-        mainTable.innerHTML = ""
-        drawBoard()
         }
     else if (gameType == "1PHard"){
         itsAOnePlayerGame = true
         resetBoard()
-        mainTable.innerHTML = ""
-        drawBoard()
         }
     else if (gameType == "2P"){
         itsAOnePlayerGame = false
         resetBoard()
-        mainTable.innerHTML = ""
-        drawBoard()
         }
 };
-
 
 function swapTurns() {
     if (isThereAWinner == true) {return}
@@ -170,20 +158,6 @@ function swapTurns() {
 };
 
 // GAMEPLAY
-
-function computerPlays() {
-    findAvailableSpots()
-    indexPick = availableSpots[Math.floor(Math.random() * availableSpots.length)]
-    gameboard[i].splice((indexPick), 1, whosPlaying())
-    mainTable.innerHTML = ""
-    drawBoard()
-    checkForWinners() 
-    setTimeout(
-        function() {
-            swapTurns()
-        }, 10)
-    return
-}
 
 function whosPlaying() {
     if (playerOneTurn) {
@@ -209,9 +183,10 @@ function claimSpot(){
             setTimeout(
                 function() {
                     swapTurns()
-                }, 10)
-
-            return
+                    if (itsAOnePlayerGame == true) {computerPlays()}
+                    else {return}
+                }, 10)            
+            break
             }
         }
     }
@@ -220,6 +195,38 @@ function claimSpot(){
         alert("Forbidden")
     }
 };
+
+function computerPlays() {
+    findAvailableSpots()
+    indexPick = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
+    console.log(whosPlaying())
+    console.log(indexPick)
+
+    // need to put this in or else alert pops twice:
+    // if (isThereAWinner == true){return}
+    // else {
+    // alert only happens twice if yellow wins
+    // if red wins, it's proper
+
+    let i;
+    for (i = 5; i > -1; i--) 
+        {if (Number.isInteger(gameboard[i][indexPick])) {
+            gameboard[i].splice((indexPick), 1, whosPlaying())
+            mainTable.innerHTML = ""
+            drawBoard()
+            checkForWinners() 
+
+            setTimeout(
+                function() {
+                swapTurns()
+                }, 
+            10)
+            break
+            }
+        }
+    
+};
+
 
 // if there is a string in row[0], that column is no longer available.
 // the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
