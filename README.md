@@ -1,5 +1,8 @@
 # C4minimax
 
+1/13 Finally got to minimax. 
+I noticed
+
 1/12
 I had these questions in recent days:
 https://stackoverflow.com/questions/70690577/why-are-my-functions-executing-out-of-order-at-the-end-of-this-connect-four-game

@@ -1,38 +1,38 @@
 .header {
-    width:640px;
-    height:30px;
+    width:320px;
+    height:50px;
     display: flex;
     justify-content: space-between;
     background-color: lightblue;
 }
 
 .announcements {
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 form {
-    font-size: 1.5em;
+    font-size: 1em;
 }
 
 
 .selectorTable {
     background-color: whitesmoke;
-    width:640px;
-    height:90px;
+    width:320px;
+    height:45px;
 }
 
 .selectorCell {
     background-color: whitesmoke;
-    width: 90px;
-    height: 90px;
+    width: 23px;
+    height: 23px;
     text-align: center;
 }
 
 .selectorCell .innerSelectorCell  {
     margin: auto;
     text-align: center;
-    width: 73px;
-    height: 73px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: inline-block;
 }
@@ -54,15 +54,15 @@ form {
 
 .mainTable {
     background-color: blue;
-    width:640px;
-    height:590px;
+    width:320px;
+    height:295px;
 }
 
 /* what makes the gridlines go away? */
 .outerCell {
     background-color: blue;
-    width: 90px;
-    height: 90px;
+    width: 45px;
+    height: 45px;
     text-align: center;
 }
 
@@ -70,39 +70,16 @@ form {
     margin: auto;
     text-align: center;
     background-color: whitesmoke;
-    width: 73px;
-    height: 73px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     display: inline-block;
 }
 
-/* why can't I use class here? */
 .Yellow {
     background-color: yellow;
 }
 
 .Red {
     background-color: red;
-}
-
-#gameTypeChoiceArea {
-    background-color: pink;
-    width:640px;
-    height:120px;
-    text-align: left;
-}
-
-#twoPlayerChoiceDiv {
-    width:320px;
-    background-color: green;
-    display: inline;
-}
-
-#2P {
-    display: inline-block;
-}
-
-input[type=radio] {
-    display: inline;
-    border: 0px;
 }
