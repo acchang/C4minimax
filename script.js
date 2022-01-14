@@ -1,7 +1,7 @@
 // Watch Leon Noel
-// repack meats
 // minimax
 // clean up desktop and notes
+// i can turn this into an article on medium since there are no c4 JS minimax
 
 let gameboard = [
                  [1,2,3,4,5,6,7],
@@ -32,8 +32,7 @@ let itsAHardGame = false
 let itsTwoPlayerGame = false
 let isThereAWinner = true
 
-let score
-let currentPlayer = whosPlaying()
+let score = 0
 
 let mainDiv = document.createElement("div");
 mainDiv.setAttribute('class', 'mainDiv')
@@ -182,7 +181,7 @@ function whosPlaying() {
 
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
 function claimSpot(){
-    findAvailableSpots(gameboard)
+    availableSpots = findAvailableSpots(gameboard)
     if (availableSpots.includes(indexPick+1)) {
 
     let i;
@@ -193,14 +192,13 @@ function claimSpot(){
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
-
             setTimeout(
                 function() {
-                    swapTurns()
+                    swapTurns() 
                     if ((itsAOnePlayerGame == true && isThereAWinner == false) || (itsAHardGame == true && isThereAWinner == false))
                      {computerPlays()}
                     else {return}
-                }, 240)            
+                }, 240)  
             break
             }
         }
@@ -213,11 +211,11 @@ function claimSpot(){
 
 function computerPlays() {
     if (itsAOnePlayerGame == true) {
-        findAvailableSpots(gameboard)
+        availableSpots = findAvailableSpots(gameboard)
         indexPick = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
     }
     else if (itsAHardGame == true)
-        {indexPick = 6}
+        {indexPick = pickBestMove()}
 
     let i;
     for (i = 5; i > -1; i--) 
@@ -241,7 +239,7 @@ function computerPlays() {
 // if there is a string in row[0], that column is no longer available.
 // the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
 function findAvailableSpots(board) {
-    availableSpots = board[0].filter(x => Number.isInteger(x) == true)
+    return board[0].filter(x => Number.isInteger(x) == true)
 };
 
 // function minimax(gameboard)
@@ -341,49 +339,68 @@ function horizontalCheck() {
     // use a window, if 3 in a row, give score 10
 
 
-function scorePosition (board, player) {
-    if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player) && (board[r][c+3] == player)) {
-        score = 100
+// how to prevent double-counting? Maybe it doesn't matter
+function scorePositionHoriz (board, player) {
+    for (r=0; r<6; r++) {
+        for (c=0; c<4; c++){
+            (console.log("checking: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
+            score = 0
+            if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
+                score = score + 10
+                // will need to tweak bc don't want score to pile up from various boards
+                console.log("scored is" + score)
+                return score
+            }
+            else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
+
+            // also tried:
+            // if ((Number.isInteger(board[r][c]) == Number.isInteger(board[r][c+1])) &&
+            // (Number.isInteger(board[r][c+1]) == Number.isInteger(board[r][c+2]))) {
+            //     console.log("equal true")}
+            //  else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
+            // return 0
+
+            // something about "if" throwing things off
+        }
     }
-    else if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
-        score = 10
-    }
-    console.log(board)
-    console.log(score)
-    return score
-    };
+    if (score == 0) {return 0}
+    else {return score}
+};
 
-function pickBestMove(board) {
-     let bestScore
-     let bestColumn
-
-     let parallelAvailable = findAvailableSpots(board)
-     console.log(parallelAvailable)
-
+function pickBestMove() {
+    let bestScore = -1
+    let bestColumn 
+    let parallelAvailable = findAvailableSpots(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
-        let i;
-        let j = parallelAvailable[s]
-        console.log(j)
-        for (i = 5; i > -1; i--) 
-            {if (Number.isInteger(parallelBoard[i][j])) {
-                parallelBoard[i].splice((j), 1, currentPlayer)
-                let positionScore = scorePosition (parallelBoard, currentPlayer)
-                console.log(positionScore)
-                parallelBoard[i].splice((indexPick), 1, gameboard[i][indexPick])
-                
-                    if (positionScore > bestScore) {
-                        bestScore = score
-                        console.log(bestScore)
-                        bestColumn = s
-                        console.log(bestColumn)
-                    }
-                return
-               }
+            let i;
+            let j = parseInt(parallelAvailable[s] - 1)
+            console.log ("from avail spot " + j)
+            for (i = 5; i > -1; i--) 
+                if (Number.isInteger(parallelBoard[i][j])) {
+                parallelBoard[i].splice((j), 1, whosPlaying())
+                break
             }
+        let positionScore = scorePositionHoriz(parallelBoard, whosPlaying())
+        console.log("test board with marker in " + gameboard[i][j])
+        parallelBoard[i].splice((j), 1, gameboard[i][j])
+
+        if (positionScore > bestScore) {
+         bestScore = positionScore
+        console.log("Best Score is " + bestScore)
+        bestColumn = s
         }
-        return bestColumn
-    };
+        else {console.log("not better")}
+        console.log("tested avail spot: " + s)
+        }
+        console.log("BestColumn decided: " + bestColumn)
+        if (bestColumn == 0){
+            let altSpot = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
+            console.log("random choice:" + altSpot)
+            return altSpot
+        }
+    else {return bestColumn}
+}
 
 
 
