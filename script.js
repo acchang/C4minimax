@@ -1,7 +1,6 @@
 // Watch Leon Noel
 // repack meats
 // minimax
-// consider resizing for mobile
 // clean up desktop and notes
 
 let gameboard = [
@@ -13,14 +12,28 @@ let gameboard = [
                  [36,37,38,39,40,41,42]
                 ];
 
+let parallelBoard = [
+    [1,2,3,4,5,6,7],
+    [8,9,10,11,12,13,14],
+    [15,16,17,18,19,20,21],
+    [22,23,24,25,26,27,28],
+    [29,30,31,32,33,34,35],
+    [36,37,38,39,40,41,42]
+    ];
+
 let playerOne
 let playerTwo
 let indexPick
 let availableSpots
 let gameType
 let playerOneTurn = true
-let itsAOnePlayerGame
+let itsAOnePlayerGame = false
+let itsAHardGame = false
+let itsTwoPlayerGame = false
 let isThereAWinner = true
+
+let score
+let currentPlayer = whosPlaying()
 
 let mainDiv = document.createElement("div");
 mainDiv.setAttribute('class', 'mainDiv')
@@ -138,11 +151,11 @@ function beginGame() {
         resetBoard()
         }
     else if (gameType == "1PHard"){
-        itsAOnePlayerGame = true
+        itsAHardGame = true
         resetBoard()
         }
     else if (gameType == "2P"){
-        itsAOnePlayerGame = false
+        itsATwoPlayerGame = true
         resetBoard()
         }
 };
@@ -169,13 +182,14 @@ function whosPlaying() {
 
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
 function claimSpot(){
-    findAvailableSpots()
+    findAvailableSpots(gameboard)
     if (availableSpots.includes(indexPick+1)) {
 
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
             gameboard[i].splice((indexPick), 1, whosPlaying())
+            parallelBoard[i].splice((indexPick), 1, whosPlaying())
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
@@ -183,7 +197,8 @@ function claimSpot(){
             setTimeout(
                 function() {
                     swapTurns()
-                    if (itsAOnePlayerGame == true && isThereAWinner == false) {computerPlays()}
+                    if ((itsAOnePlayerGame == true && isThereAWinner == false) || (itsAHardGame == true && isThereAWinner == false))
+                     {computerPlays()}
                     else {return}
                 }, 240)            
             break
@@ -197,15 +212,18 @@ function claimSpot(){
 };
 
 function computerPlays() {
-    findAvailableSpots()
-// if it's 1PEasy then
-    indexPick = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
-// if it's 1PHard then indexPick = another choice
+    if (itsAOnePlayerGame == true) {
+        findAvailableSpots(gameboard)
+        indexPick = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
+    }
+    else if (itsAHardGame == true)
+        {indexPick = 6}
 
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
             gameboard[i].splice((indexPick), 1, whosPlaying())
+            parallelBoard[i].splice((indexPick), 1, whosPlaying())
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
@@ -222,8 +240,8 @@ function computerPlays() {
 
 // if there is a string in row[0], that column is no longer available.
 // the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
-function findAvailableSpots() {
-    availableSpots = gameboard[0].filter(x => Number.isInteger(x) == true)
+function findAvailableSpots(board) {
+    availableSpots = board[0].filter(x => Number.isInteger(x) == true)
 };
 
 // function minimax(gameboard)
@@ -254,6 +272,9 @@ function winDeclared() {
           alert(whosPlaying() + " wins!")
         }, 10)
     
+    itsAOnePlayerGame = false
+    itsAHardGame = false
+    itsATwoPlayerGame = false
     return
 };
 
@@ -306,6 +327,106 @@ function horizontalCheck() {
 
 
 // Minimax
+// start 54:00
+
+// 14:00 score a board independent of the piece dropped
+// count how many 2s 3s 
+
+    // look at window sizes of 4, 
+    // for each row, look at the 7 tiles
+    // use a window, if 4 in a row, give score 100
+
+    // look at window sizes of 4, 
+    // for each row, look at the 7 tiles
+    // use a window, if 3 in a row, give score 10
+
+
+function scorePosition (board, player) {
+    if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player) && (board[r][c+3] == player)) {
+        score = 100
+    }
+    else if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
+        score = 10
+    }
+    console.log(board)
+    console.log(score)
+    return score
+    };
+
+function pickBestMove(board) {
+     let bestScore
+     let bestColumn
+
+     let parallelAvailable = findAvailableSpots(board)
+     console.log(parallelAvailable)
+
+
+     for (s=0; s<parallelAvailable.length; s++) {
+        let i;
+        let j = parallelAvailable[s]
+        console.log(j)
+        for (i = 5; i > -1; i--) 
+            {if (Number.isInteger(parallelBoard[i][j])) {
+                parallelBoard[i].splice((j), 1, currentPlayer)
+                let positionScore = scorePosition (parallelBoard, currentPlayer)
+                console.log(positionScore)
+                parallelBoard[i].splice((indexPick), 1, gameboard[i][indexPick])
+                
+                    if (positionScore > bestScore) {
+                        bestScore = score
+                        console.log(bestScore)
+                        bestColumn = s
+                        console.log(bestColumn)
+                    }
+                return
+               }
+            }
+        }
+        return bestColumn
+    };
+
+
+
+
+
+// find a row from column 6 up that will accomodate
+// take the space, copy it to a variable, 
+// splice in that space, score it
+// let positionScore = scorePosition (parallelBoard, currentPlayer)
+// splice back in the variable, or take the space from unmodified gameboard.
+
+//     remove the piece
+//     drop piece in, score the board
+//     score = scorePosition(gameboard, temp position)
+// let positionScore = scorePosition (parallelBoard, currentPlayer)
+//     replace the piece -- remember the removed piece.
+
+//         if (positionScore > bestScore) {
+//             bestScore = score
+//             bestColumn = s
+//             console.log bestColumn
+//         }
+//     }
+// };
+
+// examine each row in the array to see if four in a row
+// 100 pts 4 in a row (already have this)
+// 22:45 else if 3 in a row, 10 pts
+// score a horizontal move, and prefer move to 31:00
+
+// use scores for each move and make sure it preferences it
+
+// up to 50:00 he writes algos pref each direction
+
+
+// function Minimax(board, depth, player) {
+//     if depth == 0 ||
+// }
+
+// function isTerminalNode{
+
+// }
+
 
 function bestAIMove() {
     let bestScore = -10000
@@ -339,6 +460,9 @@ function bestAIMove() {
   suggestedAIMove()
   }
   
+
+
+
   // minimax() fires when it is called by bestAIMove()
   // (1) if neither checkwin() nor tie() is true, then swapTurns(), then ...
   // (2) listParallelSpaces(), forloop over that array.
@@ -366,7 +490,7 @@ function bestAIMove() {
 // I may need a simpler swapTurnsMM mechanism
 // I need to copy and evaluate gameboard
 
-  function minimax() {
+  function minimaxTTT() {
     if (newCheckWin() &&  playerOneTurn) {
       return -10;
     } else if (newCheckWin() && !playerOneTurn) {
