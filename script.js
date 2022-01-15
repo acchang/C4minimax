@@ -339,23 +339,31 @@ function horizontalCheck() {
     // use a window, if 3 in a row, give score 10
 
 
-// issues: double-counting? Does it matter?
-// the loop "sees" two trios of reds
+// issues: double-counting when getting 4s? Does it matter?
+// i need this to weigh 4s too, and stop it from piling up in column 0
+// need to stop it from choosing nonexistent and swapping sides
+
 function scorePositionHoriz (board, player) {
     for (r=0; r<6; r++) {
         for (c=0; c<4; c++){
             // (console.log("checking: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
-            // score = 0
             if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
                 score = score + 10
+                console.log(score)
+            }
+        }
+
+        for (c=0; c<3; c++){
+            if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player) && (board[r][c+3] == player)) {
+                score = score + 100
                 console.log(score)
             }
             // else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
         }
     }
-    if (score == 0) {return 0}
-    else {return score}
+    return score
 };
+
 
 function pickBestMove() {
     let bestScore = -1
@@ -366,33 +374,41 @@ function pickBestMove() {
             score = 0
             let i;
             let j = parseInt(parallelAvailable[s] - 1)
-            console.log ("from avail spot " + j)
+
+            // this is screwing up bc when a spot disappears they're no longer offset by 1
+            // I have to change availableSpots function to point to indexes
+            // get the indexes of what is still an interger!
+            
+            console.log ("test index " + j + " from #s " + parallelAvailable)
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
         let positionScore = scorePositionHoriz(parallelBoard, whosPlaying())
+        // then I will add up the 4 directions to get overall score
         console.log("test board with marker in " + gameboard[i][j])
-        console.log("with " + j + " score is" + score )
+        console.log("index " + j + " score is " + score )
         parallelBoard[i].splice((j), 1, gameboard[i][j])
-        console.log("best Score and Column" + bestScore, bestColumn)
+        console.log("Top Score was " + bestScore)
 
         if (positionScore > bestScore) {
-         bestScore = positionScore
-        console.log("Best Score is " + bestScore)
+        bestScore = positionScore
         bestColumn = s
+        // maybe should be j
+        console.log("Top Column/Score is now " + bestColumn, bestScore)
         }
-        else {console.log("not better")}
-        console.log("tested avail spot: " + s)
+        else {console.log(s + " is not better")}
         }
-        console.log("BestColumn decided: " + bestColumn)
+
+        console.log("Final Column/Score is " + bestColumn, bestScore)
+
         if (bestScore == 0){
             let altSpot = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
             console.log("random choice:" + altSpot)
             return altSpot
         }
-    else {
+        else {
         return bestColumn
     }
 }
