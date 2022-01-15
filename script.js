@@ -360,35 +360,55 @@ function scorePositionHoriz (board, player) {
 };
 
 
-/// I need to clear this logic
 function scorePositionVert (board, player) {
     for (r=5; r>2; r--) {
         for (c=0; c<7; c++){
             if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player) && (board[r-3][c] == player)) {
                 score = score + 100
-                console.log("vert: " score)
-            }
-        }
-    }
-
-    for (r=5; r>1; r--) {
-        for (c=0; c<7; c++){
-            if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player) && (board[r-3][c] == player)) {
-                score = score + 100
-                console.log("vert: " score)
-            }
+                console.log("vert: " + score)
+                }
+            if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player)) {
+                score = score + 10
+                console.log("vert: " + score)
+                }   
         }
     }
     return score
 };
 
 
+function scorePositionUpright (board, player) {
+    for (r=5; r>2; r--) {
+        for (c=0; c<4; c++){
+            if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r-2][c+2] == player) && (board[r-3][c+3] == player)) {
+                score = score + 100
+                console.log("upright: " + score)
+                }
+            if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r-2][c+2] == player)) {
+                score = score + 10
+                console.log("upright: " + score)
+                }   
+        }
+    }
+    return score
+};
 
 
-
-
-
-
+// function scorePositionDownright (board, player) {
+//     for (r=0; r<3; r++) {
+//         for (c=0; c<4; c++){
+//             if ((board[r][c] == player) && (board[r+1][c+1] == player) && (board[r+2][c+2] == player) && (board[r+3][c+3] == player)) {
+//                 score = score + 100
+//                 console.log("downright: " + score)
+//                 }
+//             if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r+2][c+2] == player)) {
+//                 score = score + 10
+//                 console.log("downright: " + score)
+//                 }   
+//         }
+//     }
+//     return score
+// };
 
 
 
@@ -409,8 +429,10 @@ function pickBestMove() {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
-        let positionScore = scorePositionHoriz(parallelBoard, whosPlaying())
-        // then I will add up the 4 directions to get overall score
+        let positionScore = scorePositionHoriz(parallelBoard, whosPlaying()) 
+                            + scorePositionVert(parallelBoard, whosPlaying())
+                            + scorePositionUpright(parallelBoard, whosPlaying())
+                            // + scorePositionDownright(parallelBoard, whosPlaying())
         console.log("test board with marker in " + gameboard[i][j])
         console.log("index " + j + " score is " + score )
         parallelBoard[i].splice((j), 1, gameboard[i][j])
