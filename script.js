@@ -383,32 +383,41 @@ function scorePositionUpright (board, player) {
             if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r-2][c+2] == player) && (board[r-3][c+3] == player)) {
                 score = score + 100
                 console.log("upright: " + score)
-                }
+            }
+        }
+    }
+    for (r=5; r>1; r--) {
+        for (c=0; c<5; c++){
             if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r-2][c+2] == player)) {
                 score = score + 10
                 console.log("upright: " + score)
-                }   
+            }   
         }
     }
     return score
 };
 
+// errors fixed?
+function scorePositionDownright (board, player) {
+    for (r=0; r<3; r++) {
+        for (c=0; c<4; c++){
+            if ((board[r][c] == player) && (board[r+1][c+1] == player) && (board[r+2][c+2] == player) && (board[r+3][c+3] == player)) {
+                score = score + 100
+                console.log("downright: " + score)
+            }
+        }
+    }
 
-// function scorePositionDownright (board, player) {
-//     for (r=0; r<3; r++) {
-//         for (c=0; c<4; c++){
-//             if ((board[r][c] == player) && (board[r+1][c+1] == player) && (board[r+2][c+2] == player) && (board[r+3][c+3] == player)) {
-//                 score = score + 100
-//                 console.log("downright: " + score)
-//                 }
-//             if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r+2][c+2] == player)) {
-//                 score = score + 10
-//                 console.log("downright: " + score)
-//                 }   
-//         }
-//     }
-//     return score
-// };
+    for (r=0; r<4; r++) {
+        for (c=0; c<5; c++){
+            if ((board[r][c] == player) && (board[r+1][c+1] == player) && (board[r+2][c+2] == player)) {
+                score = score + 10
+                console.log("downright: " + score)
+            }
+        }
+    }
+    return score
+};
 
 
 
@@ -429,10 +438,11 @@ function pickBestMove() {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
-        let positionScore = scorePositionHoriz(parallelBoard, whosPlaying()) 
-                            + scorePositionVert(parallelBoard, whosPlaying())
-                            + scorePositionUpright(parallelBoard, whosPlaying())
-                            // + scorePositionDownright(parallelBoard, whosPlaying())
+        let positionScore = scorePositionUpright(parallelBoard, whosPlaying())
+                            + scorePositionDownright(parallelBoard, whosPlaying())
+                            // + scorePositionHoriz(parallelBoard, whosPlaying()) 
+                            // + scorePositionVert(parallelBoard, whosPlaying())
+
         console.log("test board with marker in " + gameboard[i][j])
         console.log("index " + j + " score is " + score )
         parallelBoard[i].splice((j), 1, gameboard[i][j])
