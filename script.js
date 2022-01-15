@@ -339,28 +339,18 @@ function horizontalCheck() {
     // use a window, if 3 in a row, give score 10
 
 
-// how to prevent double-counting? Maybe it doesn't matter
+// issues: double-counting? Does it matter?
+// the loop "sees" two trios of reds
 function scorePositionHoriz (board, player) {
     for (r=0; r<6; r++) {
         for (c=0; c<4; c++){
-            (console.log("checking: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
-            score = 0
+            // (console.log("checking: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
+            // score = 0
             if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
                 score = score + 10
-                // will need to tweak bc don't want score to pile up from various boards
-                console.log("scored is" + score)
-                return score
+                console.log(score)
             }
-            else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
-
-            // also tried:
-            // if ((Number.isInteger(board[r][c]) == Number.isInteger(board[r][c+1])) &&
-            // (Number.isInteger(board[r][c+1]) == Number.isInteger(board[r][c+2]))) {
-            //     console.log("equal true")}
-            //  else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
-            // return 0
-
-            // something about "if" throwing things off
+            // else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
         }
     }
     if (score == 0) {return 0}
@@ -373,6 +363,7 @@ function pickBestMove() {
     let parallelAvailable = findAvailableSpots(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
+            score = 0
             let i;
             let j = parseInt(parallelAvailable[s] - 1)
             console.log ("from avail spot " + j)
@@ -383,7 +374,9 @@ function pickBestMove() {
             }
         let positionScore = scorePositionHoriz(parallelBoard, whosPlaying())
         console.log("test board with marker in " + gameboard[i][j])
+        console.log("with " + j + " score is" + score )
         parallelBoard[i].splice((j), 1, gameboard[i][j])
+        console.log("best Score and Column" + bestScore, bestColumn)
 
         if (positionScore > bestScore) {
          bestScore = positionScore
@@ -394,14 +387,16 @@ function pickBestMove() {
         console.log("tested avail spot: " + s)
         }
         console.log("BestColumn decided: " + bestColumn)
-        if (bestColumn == 0){
+        if (bestScore == 0){
             let altSpot = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
             console.log("random choice:" + altSpot)
             return altSpot
         }
-    else {return bestColumn}
+    else {
+        return bestColumn
+    }
 }
-
+// there is an error at top of column, it keeps going and you switch to playing red
 
 
 
