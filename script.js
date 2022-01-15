@@ -338,29 +338,60 @@ function horizontalCheck() {
 
 // Minimax
 // start 54:00
-
 // 14:00 score a board independent of the piece dropped
 
 function scorePositionHoriz (board, player) {
     for (r=0; r<6; r++) {
         for (c=0; c<4; c++){
-            // (console.log("checking: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
             if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
                 score = score + 10
-                console.log(score)
+                console.log("horiz: " + score)
             }
         }
 
         for (c=0; c<3; c++){
             if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player) && (board[r][c+3] == player)) {
                 score = score + 100
-                console.log(score)
+                console.log("horiz: " + score)
             }
-            // else (console.log("no matches: " + (board[r][c]),(board[r][c+1]),(board[r][c+2])))
         }
     }
     return score
 };
+
+
+/// I need to clear this logic
+function scorePositionVert (board, player) {
+    for (r=5; r>2; r--) {
+        for (c=0; c<7; c++){
+            if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player) && (board[r-3][c] == player)) {
+                score = score + 100
+                console.log("vert: " score)
+            }
+        }
+    }
+
+    for (r=5; r>1; r--) {
+        for (c=0; c<7; c++){
+            if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player) && (board[r-3][c] == player)) {
+                score = score + 100
+                console.log("vert: " score)
+            }
+        }
+    }
+    return score
+};
+
+
+
+
+
+
+
+
+
+
+
 
 
 function pickBestMove() {
