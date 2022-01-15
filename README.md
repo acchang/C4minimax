@@ -1,7 +1,47 @@
 # C4minimax
 
-1/13 Finally got to minimax. 
-I noticed
+1/15 working on the first part of my algorithm, and debugging why it was piling up picks in column 0 and the program was allowing it choose a full column and then swap sides so 1P had to play red.
+
+It was so interesting to console log everything and understand why this was happening. 
+
+I have a function:
+
+          function findAvailableSpots(board) {
+          return board[0].filter(x => Number.isInteger(x) == true)
+          };
+
+This basically says "look at row 0 on the C4 board, and filter the numbers that have integers."
+
+My row 0 on the C4 Board looks like this: [1,2,3,4,5,6,7], and if a spot is claimed, it will be replaced by a string.
+
+If I eliminate the strings and subtract by 1, I get the indexes of the columns that are free. It worked for the 2P game.
+
+But in the 1P game, I have this code:
+
+     let parallelAvailable = findAvailableSpots(parallelBoard)
+
+     for (s=0; s<parallelAvailable.length; s++) {
+            score = 0
+            let i;
+            let j = parseInt(parallelAvailable[s] - 1)
+
+I iterate on what findAvailableSpots() returns, and j always assumes parallelAvailable[s] will be offset by one. But when a column disappears they're no longer offset by 1,
+
+For example in this set up, index is availspots minus 1.
+     // availspots: 1 2 3 4
+     // index:      0 1 2 3
+
+But when 1 is filled, this is how the alignment changes:
+     // availspots: 2 3 4
+     // index:      0 1 2
+Index is now availspots minus 2.
+
+So I have to change availableSpots function to point to indexes and get the indexes of the elements in row 0 that are still intergers. This will solve the over-picking from column issue too
+
+this was never even an issue in the 1P Easy game because the index of the reduced available spaces never mattered. but with the AI, I use a for loop where j is the column I check, and that is based on the integer, not the index, so the column being checked will skip around.
+
+I also had bestColumn being s but it should be j because s will always tell me column 0 is a choice even when it's not because the loop always starts from 0.
+
 
 1/12
 I had these questions in recent days:

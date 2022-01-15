@@ -24,7 +24,7 @@ let parallelBoard = [
 let playerOne
 let playerTwo
 let indexPick
-let availableSpots
+let availableIndexes
 let gameType
 let playerOneTurn = true
 let itsAOnePlayerGame = false
@@ -181,8 +181,8 @@ function whosPlaying() {
 
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
 function claimSpot(){
-    availableSpots = findAvailableSpots(gameboard)
-    if (availableSpots.includes(indexPick+1)) {
+    availableIndexes = findAvailableIndexes(gameboard)
+    if (availableIndexes.includes(indexPick)) {
 
     let i;
     for (i = 5; i > -1; i--) 
@@ -204,15 +204,16 @@ function claimSpot(){
         }
     }
     else {
-        console.log(availableSpots)
+        console.log(availableIndexes)
         alert("Forbidden")
     }
 };
 
 function computerPlays() {
     if (itsAOnePlayerGame == true) {
-        availableSpots = findAvailableSpots(gameboard)
-        indexPick = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
+        availableIndexes = findAvailableIndexes(gameboard)
+        console.log("AI: " + availableIndexes)
+        indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
     }
     else if (itsAHardGame == true)
         {indexPick = pickBestMove()}
@@ -238,9 +239,20 @@ function computerPlays() {
 
 // if there is a string in row[0], that column is no longer available.
 // the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
-function findAvailableSpots(board) {
-    return board[0].filter(x => Number.isInteger(x) == true)
-};
+
+function findAvailableIndexes(board) {
+    let newArray=[]
+
+    board[0].forEach(function(x){
+    if (Number.isInteger(x) == true) 
+    {newArray.push(board[0].indexOf(x))}
+})
+
+return newArray
+}
+
+
+
 
 // function minimax(gameboard)
 
@@ -328,20 +340,6 @@ function horizontalCheck() {
 // start 54:00
 
 // 14:00 score a board independent of the piece dropped
-// count how many 2s 3s 
-
-    // look at window sizes of 4, 
-    // for each row, look at the 7 tiles
-    // use a window, if 4 in a row, give score 100
-
-    // look at window sizes of 4, 
-    // for each row, look at the 7 tiles
-    // use a window, if 3 in a row, give score 10
-
-
-// issues: double-counting when getting 4s? Does it matter?
-// i need this to weigh 4s too, and stop it from piling up in column 0
-// need to stop it from choosing nonexistent and swapping sides
 
 function scorePositionHoriz (board, player) {
     for (r=0; r<6; r++) {
@@ -368,17 +366,12 @@ function scorePositionHoriz (board, player) {
 function pickBestMove() {
     let bestScore = -1
     let bestColumn 
-    let parallelAvailable = findAvailableSpots(parallelBoard)
+    let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
             score = 0
             let i;
-            let j = parseInt(parallelAvailable[s] - 1)
-
-            // this is screwing up bc when a spot disappears they're no longer offset by 1
-            // I have to change availableSpots function to point to indexes
-            // get the indexes of what is still an interger!
-            
+            let j = parseInt(parallelAvailable[s])
             console.log ("test index " + j + " from #s " + parallelAvailable)
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
@@ -394,8 +387,7 @@ function pickBestMove() {
 
         if (positionScore > bestScore) {
         bestScore = positionScore
-        bestColumn = s
-        // maybe should be j
+        bestColumn = j
         console.log("Top Column/Score is now " + bestColumn, bestScore)
         }
         else {console.log(s + " is not better")}
@@ -404,7 +396,7 @@ function pickBestMove() {
         console.log("Final Column/Score is " + bestColumn, bestScore)
 
         if (bestScore == 0){
-            let altSpot = (availableSpots[Math.floor(Math.random() * availableSpots.length)] - 1)
+            let altSpot = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
             console.log("random choice:" + altSpot)
             return altSpot
         }
