@@ -1,4 +1,3 @@
-// Watch Leon Noel
 // minimax
 // clean up desktop and notes
 // i can turn this into an article on medium since there are no c4 JS minimax
@@ -13,13 +12,13 @@ let gameboard = [
                 ];
 
 let parallelBoard = [
-    [1,2,3,4,5,6,7],
-    [8,9,10,11,12,13,14],
-    [15,16,17,18,19,20,21],
-    [22,23,24,25,26,27,28],
-    [29,30,31,32,33,34,35],
-    [36,37,38,39,40,41,42]
-    ];
+                [1,2,3,4,5,6,7],
+                [8,9,10,11,12,13,14],
+                [15,16,17,18,19,20,21],
+                [22,23,24,25,26,27,28],
+                [29,30,31,32,33,34,35],
+                [36,37,38,39,40,41,42]
+                ];
 
 let playerOne
 let playerTwo
@@ -33,6 +32,8 @@ let itsTwoPlayerGame = false
 let isThereAWinner = true
 
 let score = 0
+
+// DOM creation
 
 let mainDiv = document.createElement("div");
 mainDiv.setAttribute('class', 'mainDiv')
@@ -238,23 +239,15 @@ function computerPlays() {
 };
 
 // if there is a string in row[0], that column is no longer available.
-// the cells are numbered from 1 to 7, not per index so you need to add one to indexPick to identify
 
 function findAvailableIndexes(board) {
     let newArray=[]
-
     board[0].forEach(function(x){
     if (Number.isInteger(x) == true) 
     {newArray.push(board[0].indexOf(x))}
 })
-
 return newArray
-}
-
-
-
-
-// function minimax(gameboard)
+};
 
 
 function checkForWinners() {
@@ -336,9 +329,7 @@ function horizontalCheck() {
 
 
 
-// Minimax
-// start 54:00
-// 14:00 score a board independent of the piece dropped
+// Game-playing AI
 
 function scorePositionHoriz (board, player) {
     for (r=0; r<6; r++) {
@@ -397,7 +388,6 @@ function scorePositionUpright (board, player) {
     return score
 };
 
-// errors fixed?
 function scorePositionDownright (board, player) {
     for (r=0; r<3; r++) {
         for (c=0; c<4; c++){
@@ -420,12 +410,9 @@ function scorePositionDownright (board, player) {
 };
 
 
-
-
-
 function pickBestMove() {
-    let bestScore = -1
-    let bestColumn 
+    let bestScore = 0
+    let bestColumn = 4
     let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
@@ -440,8 +427,8 @@ function pickBestMove() {
             }
         let positionScore = scorePositionUpright(parallelBoard, whosPlaying())
                             + scorePositionDownright(parallelBoard, whosPlaying())
-                            // + scorePositionHoriz(parallelBoard, whosPlaying()) 
-                            // + scorePositionVert(parallelBoard, whosPlaying())
+                            + scorePositionHoriz(parallelBoard, whosPlaying()) 
+                            + scorePositionVert(parallelBoard, whosPlaying())
 
         console.log("test board with marker in " + gameboard[i][j])
         console.log("index " + j + " score is " + score )
@@ -466,48 +453,24 @@ function pickBestMove() {
         else {
         return bestColumn
     }
-}
-// there is an error at top of column, it keeps going and you switch to playing red
+};
 
+// Minimax
+// I'm done with the scoring mechanism, now I'm looking for terminal states and working backwards.
 
-
-
-// find a row from column 6 up that will accomodate
-// take the space, copy it to a variable, 
-// splice in that space, score it
-// let positionScore = scorePosition (parallelBoard, currentPlayer)
-// splice back in the variable, or take the space from unmodified gameboard.
-
-//     remove the piece
-//     drop piece in, score the board
-//     score = scorePosition(gameboard, temp position)
-// let positionScore = scorePosition (parallelBoard, currentPlayer)
-//     replace the piece -- remember the removed piece.
-
-//         if (positionScore > bestScore) {
-//             bestScore = score
-//             bestColumn = s
-//             console.log bestColumn
-//         }
-//     }
-// };
-
-// examine each row in the array to see if four in a row
-// 100 pts 4 in a row (already have this)
+// start 54:00
+// 14:00 score a board independent of the piece dropped
+// function minimax(gameboard)
 // 22:45 else if 3 in a row, 10 pts
 // score a horizontal move, and prefer move to 31:00
 
 // use scores for each move and make sure it preferences it
-
 // up to 50:00 he writes algos pref each direction
-
 
 // function Minimax(board, depth, player) {
 //     if depth == 0 ||
 // }
-
 // function isTerminalNode{
-
 // }
 
 
@@ -543,9 +506,6 @@ function bestAIMove() {
   suggestedAIMove()
   }
   
-
-
-
   // minimax() fires when it is called by bestAIMove()
   // (1) if neither checkwin() nor tie() is true, then swapTurns(), then ...
   // (2) listParallelSpaces(), forloop over that array.
@@ -570,9 +530,6 @@ function bestAIMove() {
   // `bestScore` is interesting because there is only one best score. 
   // It keeps updating to -10, 10 or 2 depending on who the current player is.
   
-// I may need a simpler swapTurnsMM mechanism
-// I need to copy and evaluate gameboard
-
   function minimaxTTT() {
     if (newCheckWin() &&  playerOneTurn) {
       return -10;

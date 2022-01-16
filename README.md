@@ -1,5 +1,14 @@
 # C4minimax
 
+1/15 final
+So I think I'm ready to move on to minimax
+- some odd behaviors: whenever the computer doesn't have any good options, it tends to pile up choices from left to right. This makes sense because it's taking the first option if all other options are equal.
+Maybe there is way to randomize when all scores are the same? Or I could add another scan for 2-in-a-rows?
+- It does not block.
+- I hope minimax resolves both these issues.
+
+1/15 - the baseline algorithm telling the computer how to pick the right move is in. It doesn't block though, to see ahead, I will have to work on the minimax now. Almost done!
+
 1/15 working on the first part of my algorithm, and debugging why it was piling up picks in column 0 and the program was allowing it choose a full column and then swap sides so 1P had to play red.
 
 It was so interesting to console log everything and understand why this was happening. 
@@ -28,12 +37,12 @@ But in the 1P game, I have this code:
 I iterate on what findAvailableSpots() returns, and j always assumes parallelAvailable[s] will be offset by one. But when a column disappears they're no longer offset by 1,
 
 For example in this set up, index is availspots minus 1.
-     // availspots: 1 2 3 4
-     // index:      0 1 2 3
+     availspots: 1 2 3 4
+     index:      0 1 2 3
 
 But when 1 is filled, this is how the alignment changes:
-     // availspots: 2 3 4
-     // index:      0 1 2
+     availspots: 2 3 4
+     index:      0 1 2
 Index is now availspots minus 2.
 
 So I have to change availableSpots function to point to indexes and get the indexes of the elements in row 0 that are still intergers. This will solve the over-picking from column issue too
