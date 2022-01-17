@@ -180,6 +180,15 @@ function whosPlaying() {
     }
 };
 
+function whosNotPlaying() {
+    if (!playerOneTurn) {
+    return "Red"
+    } else {
+    return "Yellow"
+    }
+};
+
+
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
 function claimSpot(){
     availableIndexes = findAvailableIndexes(gameboard)
@@ -239,7 +248,8 @@ function computerPlays() {
 };
 
 // if there is a string in row[0], that column is no longer available.
-
+// find available columns by creating a "newArray" and then "forEach" element in board[0], if it's an integer
+// push the index of the integer into the newArray and return it.
 function findAvailableIndexes(board) {
     let newArray=[]
     board[0].forEach(function(x){
@@ -341,7 +351,7 @@ function scorePositionHoriz (board, player) {
         }
 
         for (c=0; c<3; c++){
-            if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player) && (board[r][c+3] == player)) {
+            if ((board[r][c] == player) && (board[r][c+1] == board[r][c+2] == player) && (board[r][c+3] == player)) {
                 score = score + 100
                 console.log("horiz: " + score)
             }
@@ -349,6 +359,49 @@ function scorePositionHoriz (board, player) {
     }
     return score
 };
+
+
+function assessHorizWindows (board, player) {
+    for (r=0; r<6; r++) {
+        for (c=0; c<3; c++){
+            let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]]
+            score = score + scoreTheArray(window)
+        }
+    }
+return score
+};
+
+function scoreTheArray(array) {
+    if (countElementInArray(sameAsPlayer(),array) === 4){return 100}
+    else if ((countElementInArray(sameAsPlayer(),array) === 3) && (countElementInArray(verifyInteger(),array) === 1)) {return 10}
+    else if ((countElementInArray(sameAsPlayer(),array) === 2) && (countElementInArray(verifyInteger(),array) === 2)) {return 5}
+    else if ((countElementInArray(sameAsOpponent(),array) === 3) && (countElementInArray(verifyInteger(),array) === 1)) {return -80}
+};
+
+function countElementInArray(criterion, array)
+
+
+    array.reduce(countItems,0)
+};
+
+function sameAsPlayer(x) {return (x == whosPlaying())};
+function verifyInteger(x){return Number.isInteger(x)};
+function sameAsOpponent(x) {return (x == whosNotPlaying())};
+
+
+function countItems(counter, element, criterion) { 
+    if (criteron(element)) counter +=1
+    return counter}
+
+let total = array.reduce((acc,cur) => countItems(criterion, acc, cur),0)
+
+
+
+let total = [ 0, 1, 2, 3 ].reduce(
+    ( previousValue, currentValue ) => previousValue + currentValue,
+    0
+  )
+
 
 
 function scorePositionVert (board, player) {
@@ -435,7 +488,7 @@ function pickBestMove() {
         parallelBoard[i].splice((j), 1, gameboard[i][j])
         console.log("Top Score was " + bestScore)
 
-        if (positionScore > bestScore) {
+        if (positionScore > bestScore || positionScore == bestScore) {
         bestScore = positionScore
         bestColumn = j
         console.log("Top Column/Score is now " + bestColumn, bestScore)
@@ -455,8 +508,14 @@ function pickBestMove() {
     }
 };
 
+
+
+
+
+
 // Minimax
 // I'm done with the scoring mechanism, now I'm looking for terminal states and working backwards.
+// the current highest scoring may not be the wisest if it sets the opponent up to win 2 moves in 
 
 // start 54:00
 // 14:00 score a board independent of the piece dropped

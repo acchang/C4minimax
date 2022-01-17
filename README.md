@@ -1,6 +1,36 @@
 # C4minimax
 
-1/15 final
+1/16
+right now 2 problems I think the minimax can solve
+1) it tends to keep playing straight up, usually, if there are no better moves
+2) it doesn't block, it doesn't react to me getting close to 4 in a row
+And I think I need to impose a tie condition; if no avail spaces, alert tie game
+
+I added this or condition which doesn't really help, because of the loop it either piles up on the left end or right end
+(positionScore > bestScore || positionScore == bestScore)
+
+maybe randomize the bestColumn initially? But that does not solve the piling up on either end;I start off in the middle anyway
+
+... actually, what I'll try before minimax is:
+
+Change scoring algo: for every four spaces, if 4 same, 100 pts, 3 same 10 pts
+But for 3, need to have one be empty, so vet for integers bc if 3 in a row but other is filled, no good
+that way I don't have to worry about the two if loops running
+use a reduce function or filter
+https://www.freecodecamp.org/news/how-to-count-objects-in-an-array/
+https://www.w3resource.com/javascript-exercises/fundamental/javascript-fundamental-exercise-70.php
+use score +=
+and 2 and 2 (5 pts)
+and opponent piece (3 and 1) (-80 make it prefer blocking more, and also start at very negative number)
+abstract the scoring out, every check with have sets of 4 anyway
+also add a condtion to prefer center (50:00)
+
+
+
+
+
+
+1/15 final stage
 So I think I'm ready to move on to minimax
 - some odd behaviors: whenever the computer doesn't have any good options, it tends to pile up choices from left to right. This makes sense because it's taking the first option if all other options are equal.
 Maybe there is way to randomize when all scores are the same? Or I could add another scan for 2-in-a-rows?
