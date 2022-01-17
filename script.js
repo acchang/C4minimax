@@ -181,7 +181,7 @@ function whosPlaying() {
 };
 
 function whosNotPlaying() {
-    if (!playerOneTurn) {
+    if (playerOneTurn) {
     return "Red"
     } else {
     return "Yellow"
@@ -361,7 +361,7 @@ function scorePositionHoriz (board, player) {
 };
 
 
-function assessHorizWindows (board, player) {
+function assessHorizWindows (board) {
     for (r=0; r<6; r++) {
         for (c=0; c<3; c++){
             let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]]
@@ -372,36 +372,43 @@ return score
 };
 
 function scoreTheArray(array) {
-    if (countElementInArray(sameAsPlayer(),array) === 4){return 100}
-    else if ((countElementInArray(sameAsPlayer(),array) === 3) && (countElementInArray(verifyInteger(),array) === 1)) {return 10}
-    else if ((countElementInArray(sameAsPlayer(),array) === 2) && (countElementInArray(verifyInteger(),array) === 2)) {return 5}
-    else if ((countElementInArray(sameAsOpponent(),array) === 3) && (countElementInArray(verifyInteger(),array) === 1)) {return -80}
+    if (array.reduce(countPlayerMarkers, 0) === 4){return 100}
+    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return 10}
+    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
+    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -80}
+    else {return 0}
 };
 
-function countElementInArray(criterion, array)
-
-
-    array.reduce(countItems,0)
-};
-
-function sameAsPlayer(x) {return (x == whosPlaying())};
-function verifyInteger(x){return Number.isInteger(x)};
-function sameAsOpponent(x) {return (x == whosNotPlaying())};
-
-
-function countItems(counter, element, criterion) { 
-    if (criteron(element)) counter +=1
+function countPlayerMarkers(counter, ele) { 
+    if (ele == whosPlaying()) counter +=1
     return counter}
 
-let total = array.reduce((acc,cur) => countItems(criterion, acc, cur),0)
+function countOpponentMarkers(counter, ele) { 
+    if (ele == whosNotPlaying()) counter +=1
+    return counter}
+
+function countEmptySpaces(counter, ele) { 
+    if (Number.isInteger(ele)) counter +=1
+    return counter}
 
 
+// function countElementInArray(criterion, array)
 
-let total = [ 0, 1, 2, 3 ].reduce(
-    ( previousValue, currentValue ) => previousValue + currentValue,
-    0
-  )
+// function countItems(counter, element) { 
+//     if (criteron(element)) counter +=1
+//     return counter}
 
+//     array.reduce(countItems,0)
+// };
+
+// function sameAsPlayer(x) {return (x == whosPlaying())};
+// function verifyInteger(x){return Number.isInteger(x)};
+// function sameAsOpponent(x) {return (x == whosNotPlaying())};
+
+
+// function countItems(counter, element, criterion) { 
+//     if (criteron(element)) counter +=1
+//     return counter}
 
 
 function scorePositionVert (board, player) {
@@ -465,11 +472,11 @@ function scorePositionDownright (board, player) {
 
 function pickBestMove() {
     let bestScore = 0
-    let bestColumn = 4
+    let bestColumn = 3
     let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
-            score = 0
+            score = -10
             let i;
             let j = parseInt(parallelAvailable[s])
             console.log ("test index " + j + " from #s " + parallelAvailable)
@@ -478,13 +485,15 @@ function pickBestMove() {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
-        let positionScore = scorePositionUpright(parallelBoard, whosPlaying())
-                            + scorePositionDownright(parallelBoard, whosPlaying())
-                            + scorePositionHoriz(parallelBoard, whosPlaying()) 
-                            + scorePositionVert(parallelBoard, whosPlaying())
+        let positionScore = assessHorizWindows(parallelBoard)
+        
+        // scorePositionUpright(parallelBoard, whosPlaying())
+        //                     + scorePositionDownright(parallelBoard, whosPlaying())
+        //                     + scorePositionHoriz(parallelBoard, whosPlaying()) 
+        //                     + scorePositionVert(parallelBoard, whosPlaying())
 
         console.log("test board with marker in " + gameboard[i][j])
-        console.log("index " + j + " score is " + score )
+        console.log("index " + j + " score is " + positionScore )
         parallelBoard[i].splice((j), 1, gameboard[i][j])
         console.log("Top Score was " + bestScore)
 
@@ -498,14 +507,17 @@ function pickBestMove() {
 
         console.log("Final Column/Score is " + bestColumn, bestScore)
 
-        if (bestScore == 0){
-            let altSpot = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-            console.log("random choice:" + altSpot)
-            return altSpot
-        }
-        else {
+        // it sees it but it's not blocking because score is 0 and so it chooses random
+        // it chooses random when score is 0 because when nothing is better I don't want it hitting the same always
+
+        // if (bestScore == 0){
+        //     let altSpot = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
+        //     console.log("random choice:" + altSpot)
+        //     return altSpot
+        // }
+        // else {
         return bestColumn
-    }
+    // }
 };
 
 
