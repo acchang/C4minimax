@@ -341,27 +341,7 @@ function horizontalCheck() {
 
 // Game-playing AI
 
-function scorePositionHoriz (board, player) {
-    for (r=0; r<6; r++) {
-        for (c=0; c<4; c++){
-            if ((board[r][c] == player) && (board[r][c+1] == player) && (board[r][c+2] == player)) {
-                score = score + 10
-                console.log("horiz: " + score)
-            }
-        }
-
-        for (c=0; c<3; c++){
-            if ((board[r][c] == player) && (board[r][c+1] == board[r][c+2] == player) && (board[r][c+3] == player)) {
-                score = score + 100
-                console.log("horiz: " + score)
-            }
-        }
-    }
-    return score
-};
-
-
-function assessHorizWindows (board) {
+function assessHorizWindows(board) {
     for (r=0; r<6; r++) {
         for (c=0; c<3; c++){
             let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]]
@@ -371,11 +351,42 @@ function assessHorizWindows (board) {
 return score
 };
 
+function assessVertWindows(board) {
+    for (r=5; r>2; r--) {
+        for (c=0; c<7; c++){
+            let window = [board[r][c], board[r-1][c], board[r-2][c], board[r-3][c]]
+            score = score + scoreTheArray(window)
+        }
+    }
+return score
+};
+
+function assessUprightWindows (board) {
+    for (r=5; r>2; r--) {
+        for (c=0; c<4; c++){
+            let window = [board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3]]
+            score = score + scoreTheArray(window)
+        }
+    }
+return score
+};
+
+function assessDownrightWindows (board) {
+    for (r=0; r<3; r++) {
+        for (c=0; c<4; c++){
+            let window = [board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3]]
+            score = score + scoreTheArray(window)
+        }
+    }
+return score
+};
+
 function scoreTheArray(array) {
-    if (array.reduce(countPlayerMarkers, 0) === 4){return 100}
+    if (array.reduce(countPlayerMarkers, 0) === 4){return 20}
     else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return 10}
     else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
-    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -80}
+    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -100}
+    // any move that allows this to happen will be undesirable, so it'll push to put in the space where this doesn't apply
     else {return 0}
 };
 
@@ -392,108 +403,27 @@ function countEmptySpaces(counter, ele) {
     return counter}
 
 
-// function countElementInArray(criterion, array)
-
-// function countItems(counter, element) { 
-//     if (criteron(element)) counter +=1
-//     return counter}
-
-//     array.reduce(countItems,0)
-// };
-
-// function sameAsPlayer(x) {return (x == whosPlaying())};
-// function verifyInteger(x){return Number.isInteger(x)};
-// function sameAsOpponent(x) {return (x == whosNotPlaying())};
-
-
-// function countItems(counter, element, criterion) { 
-//     if (criteron(element)) counter +=1
-//     return counter}
-
-
-function scorePositionVert (board, player) {
-    for (r=5; r>2; r--) {
-        for (c=0; c<7; c++){
-            if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player) && (board[r-3][c] == player)) {
-                score = score + 100
-                console.log("vert: " + score)
-                }
-            if ((board[r][c] == player) && (board[r-1][c] == player) && (board[r-2][c] == player)) {
-                score = score + 10
-                console.log("vert: " + score)
-                }   
-        }
-    }
-    return score
-};
-
-
-function scorePositionUpright (board, player) {
-    for (r=5; r>2; r--) {
-        for (c=0; c<4; c++){
-            if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r-2][c+2] == player) && (board[r-3][c+3] == player)) {
-                score = score + 100
-                console.log("upright: " + score)
-            }
-        }
-    }
-    for (r=5; r>1; r--) {
-        for (c=0; c<5; c++){
-            if ((board[r][c] == player) && (board[r-1][c+1] == player) && (board[r-2][c+2] == player)) {
-                score = score + 10
-                console.log("upright: " + score)
-            }   
-        }
-    }
-    return score
-};
-
-function scorePositionDownright (board, player) {
-    for (r=0; r<3; r++) {
-        for (c=0; c<4; c++){
-            if ((board[r][c] == player) && (board[r+1][c+1] == player) && (board[r+2][c+2] == player) && (board[r+3][c+3] == player)) {
-                score = score + 100
-                console.log("downright: " + score)
-            }
-        }
-    }
-
-    for (r=0; r<4; r++) {
-        for (c=0; c<5; c++){
-            if ((board[r][c] == player) && (board[r+1][c+1] == player) && (board[r+2][c+2] == player)) {
-                score = score + 10
-                console.log("downright: " + score)
-            }
-        }
-    }
-    return score
-};
-
-
 function pickBestMove() {
     let bestScore = 0
-    let bestColumn = 3
+    let bestColumn = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
     let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
-            score = -10
+
+         // prioritize middle, ?
+
+            score = 0
             let i;
-            let j = parseInt(parallelAvailable[s])
-            console.log ("test index " + j + " from #s " + parallelAvailable)
+            let j = parallelAvailable[s]
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
-        let positionScore = assessHorizWindows(parallelBoard)
+        let positionScore = assessHorizWindows(parallelBoard) + assessVertWindows(parallelBoard)
+                            + assessUprightWindows(parallelBoard) + assessDownrightWindows(parallelBoard)
         
-        // scorePositionUpright(parallelBoard, whosPlaying())
-        //                     + scorePositionDownright(parallelBoard, whosPlaying())
-        //                     + scorePositionHoriz(parallelBoard, whosPlaying()) 
-        //                     + scorePositionVert(parallelBoard, whosPlaying())
-
-        console.log("test board with marker in " + gameboard[i][j])
-        console.log("index " + j + " score is " + positionScore )
+        console.log("index " + j + " in spot " + gameboard[i][j]+ " score " + positionScore )
         parallelBoard[i].splice((j), 1, gameboard[i][j])
         console.log("Top Score was " + bestScore)
 
@@ -502,22 +432,12 @@ function pickBestMove() {
         bestColumn = j
         console.log("Top Column/Score is now " + bestColumn, bestScore)
         }
-        else {console.log(s + " is not better")}
+        else {console.log("columm " + s + " is not better")}
         }
 
         console.log("Final Column/Score is " + bestColumn, bestScore)
 
-        // it sees it but it's not blocking because score is 0 and so it chooses random
-        // it chooses random when score is 0 because when nothing is better I don't want it hitting the same always
-
-        // if (bestScore == 0){
-        //     let altSpot = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        //     console.log("random choice:" + altSpot)
-        //     return altSpot
-        // }
-        // else {
         return bestColumn
-    // }
 };
 
 
