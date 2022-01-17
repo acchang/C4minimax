@@ -1,4 +1,10 @@
-// minimax
+// build minimax
+// write reddit assessment
+// add middle column
+
+// clean up calendar, duolingo
+
+
 // clean up desktop and notes
 // i can turn this into an article on medium since there are no c4 JS minimax
 
@@ -381,13 +387,10 @@ function assessDownrightWindows (board) {
 return score
 };
 
-function scoreTheArray(array) {
-    if (array.reduce(countPlayerMarkers, 0) === 4){return 20}
-    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return 10}
-    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
-    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -100}
-    // any move that allows this to happen will be undesirable, so it'll push to put in the space where this doesn't apply
-    else {return 0}
+function weightMiddles(board){
+    let middles = [board[0][3],board[1][3],board[2][3],board[3][3],board[4][3],board[5][3]]
+    score = [middles.reduce(countPlayerMarkers, 0)] * 3
+    return score
 };
 
 function countPlayerMarkers(counter, ele) { 
@@ -403,15 +406,22 @@ function countEmptySpaces(counter, ele) {
     return counter}
 
 
+function scoreTheArray(array) {
+    if (array.reduce(countPlayerMarkers, 0) === 4){return 20}
+    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return 10}
+    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
+    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -500}
+    // any move that allows this to happen will be undesirable, so it'll push to put in the space where this doesn't apply
+    else {return 0}
+};
+
 function pickBestMove() {
-    let bestScore = 0
+    let bestScore = -10000
+    // you want this to be very low as a default so that blocking is preferred to nothing (bc even -80 is higher than -1k)
     let bestColumn = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
     let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
-
-         // prioritize middle, ?
-
             score = 0
             let i;
             let j = parallelAvailable[s]
@@ -422,6 +432,7 @@ function pickBestMove() {
             }
         let positionScore = assessHorizWindows(parallelBoard) + assessVertWindows(parallelBoard)
                             + assessUprightWindows(parallelBoard) + assessDownrightWindows(parallelBoard)
+                            + weightMiddles(parallelBoard)
         
         console.log("index " + j + " in spot " + gameboard[i][j]+ " score " + positionScore )
         parallelBoard[i].splice((j), 1, gameboard[i][j])

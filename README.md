@@ -1,5 +1,10 @@
 # C4minimax
 
+1/17
+Learned arrow functions a little more deeply, will be able to abstract my countPlayerMarkers/countOpponentMarkers/countEmptySpaces functions further, but do I really want to?
+
+https://www.reddit.com/r/learnjavascript/comments/s5npnl/is_it_possible_for_me_to_add_a_second_function_as/ht22oqk/?context=3
+
 1/16
 right now 2 problems I think the minimax can solve
 1) it tends to keep playing straight up, usually, if there are no better moves
