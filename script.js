@@ -419,17 +419,14 @@ function countEmptySpaces(counter, ele) {
 
 
 function scoreTheArray(array) {
-    if (array.reduce(countPlayerMarkers, 0) === 4){return 100}
-    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {console.log(array); return 10}
-    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {console.log(array); return 5}
-    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {console.log(array); return -500}
-    else if ((array.reduce(countOpponentMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {console.log(array); return -250}
-    // any move that allows this to happen will be undesirable, so it'll push to put in the space where this doesn't apply
+    if (array.reduce(countPlayerMarkers, 0) === 4){return 1000}
+    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return 10}
+    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
+    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -500}
+    else if ((array.reduce(countOpponentMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return -250}
     else {return 0}
 };
 
-
-// *********** WHY IS IT NOT BLOCKING BIG MOVES ON THE RIGHT?
 
 function pickBestMove() {
     let bestScore = -10000
@@ -446,13 +443,10 @@ function pickBestMove() {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
-        console.log("PBM score @ " + j + ":" + score)
-
+        
         let positionScore = assessHorizWindows(parallelBoard) + assessVertWindows(parallelBoard)
                             + assessUprightWindows(parallelBoard) + assessDownrightWindows(parallelBoard)
                             + weightMiddles(parallelBoard)
-
-        console.log("SG function says " + scoreGameboard(parallelBoard))
         
         console.log("index " + j + " in spot " + gameboard[i][j]+ " score " + positionScore )
 
@@ -475,12 +469,6 @@ function pickBestMove() {
 
 function scoreGameboard(board){
     score = 0
-    console.log("PS score: " + score)
-    console.log("horiz:" + assessHorizWindows(board) + "vert:" + assessVertWindows(board)
-    + "upright:" + assessUprightWindows(board) + "downr:" + assessDownrightWindows(board)
-    + "mid:" + weightMiddles(board)
-    )
-
     let SGB = (assessHorizWindows(board) + assessVertWindows(board)
     + assessUprightWindows(board) + assessDownrightWindows(board)
     + weightMiddles(board) 
