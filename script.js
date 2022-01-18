@@ -358,7 +358,7 @@ function horizontalCheck() {
 function assessHorizWindows(board) {
     let horizTotal = 0
     for (r=0; r<6; r++) {
-        for (c=0; c<3; c++){
+        for (c=0; c<4; c++){
             let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]]
             horizTotal += scoreTheArray(window)
         }
@@ -422,10 +422,14 @@ function scoreTheArray(array) {
     if (array.reduce(countPlayerMarkers, 0) === 4){return 100}
     else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {console.log(array); return 10}
     else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {console.log(array); return 5}
-    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -500}
+    else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {console.log(array); return -500}
+    else if ((array.reduce(countOpponentMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {console.log(array); return -250}
     // any move that allows this to happen will be undesirable, so it'll push to put in the space where this doesn't apply
     else {return 0}
 };
+
+
+// *********** WHY IS IT NOT BLOCKING BIG MOVES ON THE RIGHT?
 
 function pickBestMove() {
     let bestScore = -10000
@@ -434,7 +438,7 @@ function pickBestMove() {
     let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
-            score = 0 //this was 5 on third round
+            score = 0 
             let i;
             let j = parallelAvailable[s]
             for (i = 5; i > -1; i--) 

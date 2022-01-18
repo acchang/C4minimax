@@ -11,7 +11,16 @@ and middles at 3
 of course, there are times when the highest scoring move is not the smartest. This is why minimax is necessary.
 The AI might try to complete a 3/1, when it should prevent opponent from setting up a 2/2 which will give him a 3/1 with a choice on each side.
 
+Two issues I discovered while playing through the game: 
+My scoring function gave me a different result when I operated it outside the game than in it. 
+I discovered that this was because each scoring function for each direction added to score, so it was quadrupling
+and then when it was external, it doubled that.
 
+creating a different total for each function helped.
+
+then I realized the AI never caught rightward moving 4-in-a-rows, because I ended it too early, at column 3 instead of 4.
+
+finally, I needed to add a 2/2 opposing condition score of -250 so that you couldn't do the simple trick of setting up of setting up a 3 that was open on both sides.
 
 1/17
 Learned arrow functions a little more deeply, will be able to abstract my countPlayerMarkers/countOpponentMarkers/countEmptySpaces functions further, but do I really want to?
