@@ -1,7 +1,4 @@
 // build minimax
-// write reddit assessment
-// add middle column
-
 // clean up calendar, duolingo
 
 
@@ -37,7 +34,7 @@ let itsAHardGame = false
 let itsTwoPlayerGame = false
 let isThereAWinner = true
 
-let score = 0
+let score  // = 0
 
 // DOM creation
 
@@ -143,6 +140,14 @@ function resetBoard() {
         [29,30,31,32,33,34,35],
         [36,37,38,39,40,41,42]
        ]
+    parallelBoard = [
+        [1,2,3,4,5,6,7],
+        [8,9,10,11,12,13,14],
+        [15,16,17,18,19,20,21],
+        [22,23,24,25,26,27,28],
+        [29,30,31,32,33,34,35],
+        [36,37,38,39,40,41,42]
+       ]
     mainTable.innerHTML = ""
     drawBoard()
 };
@@ -194,7 +199,6 @@ function whosNotPlaying() {
     }
 };
 
-
 // starts from the bottom row and claims spot when there it is a number (unoccupied)
 function claimSpot(){
     availableIndexes = findAvailableIndexes(gameboard)
@@ -232,13 +236,15 @@ function computerPlays() {
         indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
     }
     else if (itsAHardGame == true)
-        {indexPick = pickBestMove()}
+        { indexPick = pickBestMove() }
+ 
 
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
             gameboard[i].splice((indexPick), 1, whosPlaying())
             parallelBoard[i].splice((indexPick), 1, whosPlaying())
+            console.log("computerplays SG score is " + scoreGameboard(parallelBoard))
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
@@ -344,53 +350,59 @@ function horizontalCheck() {
 };
 
 
-
 // Game-playing AI
+// reassess these scorers bc they're all triple-counting when they have room
+// they only single-count when at edge and nowhere to go
+// but side spaces should get more points, more plays.
 
 function assessHorizWindows(board) {
+    let horizTotal = 0
     for (r=0; r<6; r++) {
         for (c=0; c<3; c++){
             let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]]
-            score = score + scoreTheArray(window)
+            horizTotal += scoreTheArray(window)
         }
     }
-return score
+return horizTotal
 };
 
 function assessVertWindows(board) {
+    let vertTotal = 0
     for (r=5; r>2; r--) {
         for (c=0; c<7; c++){
             let window = [board[r][c], board[r-1][c], board[r-2][c], board[r-3][c]]
-            score = score + scoreTheArray(window)
+            vertTotal += scoreTheArray(window)
         }
     }
-return score
+return vertTotal
 };
 
 function assessUprightWindows (board) {
+    let uprightTotal = 0
     for (r=5; r>2; r--) {
         for (c=0; c<4; c++){
             let window = [board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3]]
-            score = score + scoreTheArray(window)
+            uprightTotal += scoreTheArray(window)
         }
     }
-return score
+return uprightTotal
 };
 
 function assessDownrightWindows (board) {
+    let downrightTotal = 0
     for (r=0; r<3; r++) {
         for (c=0; c<4; c++){
             let window = [board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3]]
-            score = score + scoreTheArray(window)
+            downrightTotal += scoreTheArray(window)
         }
     }
-return score
+return downrightTotal
 };
 
 function weightMiddles(board){
     let middles = [board[0][3],board[1][3],board[2][3],board[3][3],board[4][3],board[5][3]]
-    score = [middles.reduce(countPlayerMarkers, 0)] * 3
-    return score
+    let middleScore = [middles.reduce(countPlayerMarkers, 0)] * 3
+    return middleScore 
 };
 
 function countPlayerMarkers(counter, ele) { 
@@ -407,9 +419,9 @@ function countEmptySpaces(counter, ele) {
 
 
 function scoreTheArray(array) {
-    if (array.reduce(countPlayerMarkers, 0) === 4){return 20}
-    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return 10}
-    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
+    if (array.reduce(countPlayerMarkers, 0) === 4){return 100}
+    else if ((array.reduce(countPlayerMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {console.log(array); return 10}
+    else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {console.log(array); return 5}
     else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -500}
     // any move that allows this to happen will be undesirable, so it'll push to put in the space where this doesn't apply
     else {return 0}
@@ -422,7 +434,7 @@ function pickBestMove() {
     let parallelAvailable = findAvailableIndexes(parallelBoard)
 
      for (s=0; s<parallelAvailable.length; s++) {
-            score = 0
+            score = 0 //this was 5 on third round
             let i;
             let j = parallelAvailable[s]
             for (i = 5; i > -1; i--) 
@@ -430,11 +442,16 @@ function pickBestMove() {
                 parallelBoard[i].splice((j), 1, whosPlaying())
                 break
             }
+        console.log("PBM score @ " + j + ":" + score)
+
         let positionScore = assessHorizWindows(parallelBoard) + assessVertWindows(parallelBoard)
                             + assessUprightWindows(parallelBoard) + assessDownrightWindows(parallelBoard)
                             + weightMiddles(parallelBoard)
+
+        console.log("SG function says " + scoreGameboard(parallelBoard))
         
         console.log("index " + j + " in spot " + gameboard[i][j]+ " score " + positionScore )
+
         parallelBoard[i].splice((j), 1, gameboard[i][j])
         console.log("Top Score was " + bestScore)
 
@@ -447,12 +464,79 @@ function pickBestMove() {
         }
 
         console.log("Final Column/Score is " + bestColumn, bestScore)
-
         return bestColumn
 };
 
+// minimax
 
+function scoreGameboard(board){
+    score = 0
+    console.log("PS score: " + score)
+    console.log("horiz:" + assessHorizWindows(board) + "vert:" + assessVertWindows(board)
+    + "upright:" + assessUprightWindows(board) + "downr:" + assessDownrightWindows(board)
+    + "mid:" + weightMiddles(board)
+    )
 
+    let SGB = (assessHorizWindows(board) + assessVertWindows(board)
+    + assessUprightWindows(board) + assessDownrightWindows(board)
+    + weightMiddles(board) 
+    )
+    return SGB
+};
+
+function isTerminalMode(board){
+    if (isThereAWinner == true || [findAvailableIndexes(board)].length == 0)
+    {return true}
+}
+
+function minimax(board, depth, maximizingPlayer) {
+    validLocations = findAvailableIndexes(board)
+    if (isTerminalMode(board)) {
+        if (isThereAWinner == true && !playerOneTurn){
+            return 10000000000
+        }
+        else if (isThereAWinner == true && playerOneTurn){
+            return -10000000000
+        }
+        else {return 0}
+    }
+    else if (depth == 0)
+        {return //positionScore and player (but it's trapped inside that function
+        // and if its taken out I have take it back to zero)
+        // 1. score the board outside the algo
+        }
+    if (!playerOneTurn) {// maximizingPlayer 
+        value = math.infinity //start off
+        // score the board for each move
+        // return the top value and position
+        // move the board and erase it
+    }
+    else if (playerOneTurn)
+    {
+        // score the board for each move
+        // return the top value and position
+        // move the board and erase it
+    }
+};
+
+// it's pretty simple what I need to do: I need to score the board and 
+// I need to duplicate and alter and return it
+// *** NEED TO FIGURE HOW BEST TO SCORE THE BOARD
+// *** THEN WHY HORIZONTALS NOT WORKING
+
+// function  minimax(node, depth, maximizingPlayer) is
+//     if depth = 0 or node is a terminal node then
+//         return the heuristic value of node
+//     if maximizingPlayer then
+//         value := −∞
+//         for each child of node do
+//             value := max(value, minimax(child, depth − 1, FALSE))
+//         return value
+//     else (* minimizing player *)
+//         value := +∞
+//         for each child of node do
+//             value := min(value, minimax(child, depth − 1, TRUE))
+//         return value
 
 
 

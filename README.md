@@ -1,4 +1,17 @@
 # C4minimax
+1/18
+Now that I'm writing minimax, a little digression to explain the scoring and why minimax is necessary
+
+I put 3 opponent, 1 space as -500 because it's most important to block. This makes other choices less attractive
+then 4 player should be next, grab it while you can at 100
+then 3/1 at 10 because if at 50, two 3/1 is not as decisive as a 4
+then 2/2 at 5 just to encourage 
+and middles at 3
+
+of course, there are times when the highest scoring move is not the smartest. This is why minimax is necessary.
+The AI might try to complete a 3/1, when it should prevent opponent from setting up a 2/2 which will give him a 3/1 with a choice on each side.
+
+
 
 1/17
 Learned arrow functions a little more deeply, will be able to abstract my countPlayerMarkers/countOpponentMarkers/countEmptySpaces functions further, but do I really want to?
