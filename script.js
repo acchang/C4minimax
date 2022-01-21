@@ -34,6 +34,7 @@ let itsAHardGame = false
 let itsTwoPlayerGame = false
 let isThereAWinner = true
 
+let player
 let minimaxAvailable
 
 let score  // = 0
@@ -235,7 +236,8 @@ function computerPlays() {
     if (itsAOnePlayerGame == true) {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI: " + availableIndexes)
-        indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
+        // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
+        indexPick = minimax(parallelBoard, 4, player == playerOneTurn)
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -246,7 +248,7 @@ function computerPlays() {
         {if (Number.isInteger(gameboard[i][indexPick])) {
             gameboard[i].splice((indexPick), 1, whosPlaying())
             parallelBoard[i].splice((indexPick), 1, whosPlaying())
-            console.log("computerplays SG score is " + scoreGameboard(parallelBoard))
+            console.log("computerplays " + indexPick + " SG score is " + scoreGameboard(parallelBoard))
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
@@ -483,103 +485,70 @@ function isTerminalMode(board){
     {return true}
 }
 
-function minimax(board, depth, maximizingPlayer) { // recursive, input must be same as output
-    validLocations = findAvailableIndexes(board)
+function minimax(board, depth, player) { 
+    minimaxAvailable = findAvailableIndexes(board) 
     if (isTerminalMode(board)) {
         if (isThereAWinner == true && !playerOneTurn){
+            // return (none, 10000000000)
             return 10000000000
             }
         else if (isThereAWinner == true && playerOneTurn){
+            // return (none, -10000000000)
             return -10000000000
             }
-        else {return 0}
+        else {return (none, 0)}
     }
     else if (depth == 0)
-        {return scoreGameboard(board), whosPlaying()}   
-            }
-    swapTurns()
+        {return (scoreGameboard(board))}   
+        // {return (None, scoreGameboard(board))}   
 
-    if (!playerOneTurn) { // maximizingPlayer  
-        value = Number.NEGATIVE_INFINITY //start off
-        minimaxAvailable = findAvailableIndexes(parallelBoard)
+    if (player == !playerOneTurn) { 
+        value = Number.NEGATIVE_INFINITY 
         for (s=0; s<minimaxAvailable.length; s++) { 
             let i;
-            let j = parallelAvailable[s]
+            let j = minimaxAvailable[s]
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
-                parallelBoard[i].splice((j), 1, whosPlaying())
-                break
-            }
-        let boardValue = scoreGameboard(board)
-
-        if (boardValue > value) {
-            value = boardValue
-            bestColumn = j
-        
+                console.log(parallelBoard[i][j])
+                parallelBoard[i].splice((j), 1, "Red")
+                let boardValue = minimax(parallelBoard, depth - 1, player == playerOneTurn)
+                // this opens up a new minimax and sends it to the section below
+                // ad infinitum until the first section can evaluate
+                parallelBoard[i].splice((j), 1, gameboard[i][j])
+                    if (boardValue > value) {
+                        value = boardValue
+                        console.log("AI new value:" + value)
+                        bestColumn = j
+                    }
+                }
+        }
+        swapTurns()
+        return bestColumn
+        //no value
     }
-    else if (playerOneTurn) {
-        value = Number.POSITIVE_INFINITY //start off
-        minimaxAvailable = findAvailableIndexes(parallelBoard)
+
+    else if (player == playerOneTurn) {
+        value = Number.POSITIVE_INFINITY 
         for (s=0; s<minimaxAvailable.length; s++) { 
             let i;
-            let j = parallelAvailable[s]
+            let j = minimaxAvailable[s]
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
-                parallelBoard[i].splice((j), 1, whosPlaying())
-                break
-            }
-        let boardValue = scoreGameboard(board)
-        // I know where the swap is, but where is the return to state? easy to do in TTT
-        // the swap in C4py is in the maximizing player parameter
-        // also need to add depth
-
-        if (boardValue < value) {
-            value = boardValue
-            bestColumn = j
-    }
-};
-
-
-// start 54:00  
-  function minimaxTTT() {
-    if (newCheckWin() &&  playerOneTurn) {
-      return -10;
-    } else if (newCheckWin() && !playerOneTurn) {
-      return 10;
-    } else if (isThereATieParallel() === true) {
-      return 2;
-    }
-    swapTurns()  
-    if (!playerOneTurn) {
-      let bestScore = -10000; 
-      var player2Choices = listParallelSpaces();
-      for (var i = 0; i < player2Choices.length; i++) {
-        playerOneTurn = false
-        var player2Pick = player2Choices[i];
-        parallelBoard.splice(player2Pick, 1,TWO_CLASS);
-        var score = minimax(parallelBoard)
-        parallelBoard.splice(player2Pick, 1, player2Pick);
-        if (score > bestScore) {
-          bestScore = score
+                console.log(parallelBoard[i][j])
+                parallelBoard[i].splice((j), 1, "Yellow")
+                let boardValue = minimax(parallelBoard, depth - 1, player == !playerOneTurn)
+                // this opens up a new minimax and sends it to the section below
+                parallelBoard[i].splice((j), 1, gameboard[i][j])
+                    if (boardValue < value) {
+                        value = boardValue
+                        console.log("P1 new value:" + value)
+                        bestColumn = j
+                    }
+                }
         }
-        return bestScore
-      }
-    }
-    else {
-      let bestScore = 100000; 
-      var player1Choices = listParallelSpaces();
-  
-      for (var i = 0; i < player1Choices.length; i++) {
-        playerOneTurn = true
-        var player1Pick = player1Choices[i];
-        parallelBoard.splice(player1Pick, 1,ONE_CLASS);
-        var score = minimax(parallelBoard)
-        parallelBoard.splice(player1Pick, 1, player1Pick);
-        if (score < bestScore) {
-          bestScore = score
-        }
-        return bestScore
-      }
+        swapTurns()
+        return bestColumn
+        // return (bestColumn, value)
     }
 };
 
@@ -597,9 +566,6 @@ function minimax(board, depth, maximizingPlayer) { // recursive, input must be s
 //         for each child of node do
 //             value := min(value, minimax(child, depth − 1, TRUE))
 //         return value
-
-
-
 
 
   // minimax() fires when it is called by bestAIMove()
@@ -659,3 +625,46 @@ function bestAIMove() {
   }
   suggestedAIMove()
   }
+
+
+  function minimaxTTT() {
+    if (newCheckWin() &&  playerOneTurn) {
+      return -10;
+    } else if (newCheckWin() && !playerOneTurn) {
+      return 10;
+    } else if (isThereATieParallel() === true) {
+      return 2;
+    }
+    swapTurns()  
+    if (!playerOneTurn) {
+      let bestScore = -10000; 
+      var player2Choices = listParallelSpaces();
+      for (var i = 0; i < player2Choices.length; i++) {
+        playerOneTurn = false
+        var player2Pick = player2Choices[i];
+        parallelBoard.splice(player2Pick, 1,TWO_CLASS);
+        var score = minimax(parallelBoard)
+        parallelBoard.splice(player2Pick, 1, player2Pick);
+        if (score > bestScore) {
+          bestScore = score
+        }
+        return bestScore
+      }
+    }
+    else {
+      let bestScore = 100000; 
+      var player1Choices = listParallelSpaces();
+  
+      for (var i = 0; i < player1Choices.length; i++) {
+        playerOneTurn = true
+        var player1Pick = player1Choices[i];
+        parallelBoard.splice(player1Pick, 1,ONE_CLASS);
+        var score = minimax(parallelBoard)
+        parallelBoard.splice(player1Pick, 1, player1Pick);
+        if (score < bestScore) {
+          bestScore = score
+        }
+        return bestScore
+      }
+    }
+};
