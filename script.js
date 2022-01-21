@@ -34,6 +34,8 @@ let itsAHardGame = false
 let itsTwoPlayerGame = false
 let isThereAWinner = true
 
+let minimaxAvailable
+
 let score  // = 0
 
 // DOM creation
@@ -481,133 +483,64 @@ function isTerminalMode(board){
     {return true}
 }
 
-function minimax(board, depth, maximizingPlayer) {
+function minimax(board, depth, maximizingPlayer) { // recursive, input must be same as output
     validLocations = findAvailableIndexes(board)
     if (isTerminalMode(board)) {
         if (isThereAWinner == true && !playerOneTurn){
             return 10000000000
-        }
+            }
         else if (isThereAWinner == true && playerOneTurn){
             return -10000000000
-        }
+            }
         else {return 0}
     }
     else if (depth == 0)
-        {return //positionScore and player (but it's trapped inside that function
-        // and if its taken out I have take it back to zero)
-        // 1. score the board outside the algo
-        }
-    if (!playerOneTurn) {// maximizingPlayer 
-        value = math.infinity //start off
-        // score the board for each move
-        // return the top value and position
-        // move the board and erase it
+        {return scoreGameboard(board), whosPlaying()}   
+            }
+    swapTurns()
+
+    if (!playerOneTurn) { // maximizingPlayer  
+        value = Number.NEGATIVE_INFINITY //start off
+        minimaxAvailable = findAvailableIndexes(parallelBoard)
+        for (s=0; s<minimaxAvailable.length; s++) { 
+            let i;
+            let j = parallelAvailable[s]
+            for (i = 5; i > -1; i--) 
+                if (Number.isInteger(parallelBoard[i][j])) {
+                parallelBoard[i].splice((j), 1, whosPlaying())
+                break
+            }
+        let boardValue = scoreGameboard(board)
+
+        if (boardValue > value) {
+            value = boardValue
+            bestColumn = j
+        
     }
-    else if (playerOneTurn)
-    {
-        // score the board for each move
-        // return the top value and position
-        // move the board and erase it
+    else if (playerOneTurn) {
+        value = Number.POSITIVE_INFINITY //start off
+        minimaxAvailable = findAvailableIndexes(parallelBoard)
+        for (s=0; s<minimaxAvailable.length; s++) { 
+            let i;
+            let j = parallelAvailable[s]
+            for (i = 5; i > -1; i--) 
+                if (Number.isInteger(parallelBoard[i][j])) {
+                parallelBoard[i].splice((j), 1, whosPlaying())
+                break
+            }
+        let boardValue = scoreGameboard(board)
+        // I know where the swap is, but where is the return to state? easy to do in TTT
+        // the swap in C4py is in the maximizing player parameter
+        // also need to add depth
+
+        if (boardValue < value) {
+            value = boardValue
+            bestColumn = j
     }
 };
 
-// it's pretty simple what I need to do: I need to score the board and 
-// I need to duplicate and alter and return it
-// *** NEED TO FIGURE HOW BEST TO SCORE THE BOARD
-// *** THEN WHY HORIZONTALS NOT WORKING
 
-// function  minimax(node, depth, maximizingPlayer) is
-//     if depth = 0 or node is a terminal node then
-//         return the heuristic value of node
-//     if maximizingPlayer then
-//         value := −∞
-//         for each child of node do
-//             value := max(value, minimax(child, depth − 1, FALSE))
-//         return value
-//     else (* minimizing player *)
-//         value := +∞
-//         for each child of node do
-//             value := min(value, minimax(child, depth − 1, TRUE))
-//         return value
-
-
-
-// Minimax
-// I'm done with the scoring mechanism, now I'm looking for terminal states and working backwards.
-// the current highest scoring may not be the wisest if it sets the opponent up to win 2 moves in 
-
-// start 54:00
-// 14:00 score a board independent of the piece dropped
-// function minimax(gameboard)
-// 22:45 else if 3 in a row, 10 pts
-// score a horizontal move, and prefer move to 31:00
-
-// use scores for each move and make sure it preferences it
-// up to 50:00 he writes algos pref each direction
-
-// function Minimax(board, depth, player) {
-//     if depth == 0 ||
-// }
-// function isTerminalNode{
-// }
-
-
-function bestAIMove() {
-    let bestScore = -10000
-    var move;
-    var parallelChoices = listParallelSpaces();
-  
-    for (var i = 0; i < parallelChoices.length; i++) {
-      playerOneTurn = false;
-      var parallelPick = parallelChoices[i];
-      parallelBoard.splice(parallelPick, 1, TWO_CLASS);
-      var score = minimax()
-      playerOneTurn = false;
-      parallelBoard.splice(parallelPick, 1, parallelPick);
-      if (score > bestScore) {
-        bestScore = score;
-        move = parallelPick;
-        } 
-    }
-  playerOneTurn = false;
-  parallelBoard.splice(move, 1, TWO_CLASS);
-  origBoard[move].classList.add(TWO_CLASS);
-  origBoard[move].innerHTML = TWO_CLASS;
-  if (playerhasWon()) {
-    declareWinner();
-    return
-    } 
-  if (isThereATie() == true) {
-  declareTie()
-  return
-  }
-  suggestedAIMove()
-  }
-  
-  // minimax() fires when it is called by bestAIMove()
-  // (1) if neither checkwin() nor tie() is true, then swapTurns(), then ...
-  // (2) listParallelSpaces(), forloop over that array.
-  // (3) splice a marker into parallelboard, use minimax (on itself)
-  // this again goes to step 1, checking and swapping sides until there is a win. 
-  // if there is a score, `parallelBoard.splice(player2Pick, 1, player2Pick)` steps it back
-  // there is no swap, the board is tested again
-  // if there is no win, then again swapTurns() until there is a win
-  // and then again, step back, no swap, test again
-  // this goes until the `forloop` is done, and you get a score for one choice at bestAIMove()
-  // then bestAIMove() goes through its own forloop
-  // There is only one "score" and it is "best" depending on who is the player
-  
-  // so bestAIMove() starts with one choice and tests all possible combinations
-  // the `parallelPick` that gets the best score is turned into the `move`
-  // because the bestAIMove() does a forloop
-  // the `move` will always be the last relevant one in the array.
-  // there is a possibility that a move blocking a projected win is not the optimal move
-  // if the opponent does not do the optimal move. But because the board is so small, 
-  // if the opponent's move is sub-optimal, the AI will take the first win it sees.
-  // the AI is only effective if it takes a win over a tie or a loss and assumes you do too.
-  // `bestScore` is interesting because there is only one best score. 
-  // It keeps updating to -10, 10 or 2 depending on who the current player is.
-  
+// start 54:00  
   function minimaxTTT() {
     if (newCheckWin() &&  playerOneTurn) {
       return -10;
@@ -648,6 +581,81 @@ function bestAIMove() {
         return bestScore
       }
     }
-}
+};
 
 
+// function  minimax(node, depth, maximizingPlayer) is
+//     if depth = 0 or node is a terminal node then
+//         return the heuristic value of node
+//     if maximizingPlayer then
+//         value := −∞
+//         for each child of node do
+//             value := max(value, minimax(child, depth − 1, FALSE))
+//         return value
+//     else (* minimizing player *)
+//         value := +∞
+//         for each child of node do
+//             value := min(value, minimax(child, depth − 1, TRUE))
+//         return value
+
+
+
+
+
+  // minimax() fires when it is called by bestAIMove()
+  // (1) if neither checkwin() nor tie() is true, then swapTurns(), then ...
+  // (2) listParallelSpaces(), forloop over that array.
+  // (3) splice a marker into parallelboard, use minimax (on itself)
+  // this again goes to step 1, checking and swapping sides until there is a win. 
+  // if there is a score, `parallelBoard.splice(player2Pick, 1, player2Pick)` steps it back
+  // there is no swap, the board is tested again
+  // if there is no win, then again swapTurns() until there is a win
+  // and then again, step back, no swap, test again
+  // this goes until the `forloop` is done, and you get a score for one choice at bestAIMove()
+  // then bestAIMove() goes through its own forloop
+  // There is only one "score" and it is "best" depending on who is the player
+  
+  // so bestAIMove() starts with one choice and tests all possible combinations
+  // the `parallelPick` that gets the best score is turned into the `move`
+  // because the bestAIMove() does a forloop
+  // the `move` will always be the last relevant one in the array.
+  // there is a possibility that a move blocking a projected win is not the optimal move
+  // if the opponent does not do the optimal move. But because the board is so small, 
+  // if the opponent's move is sub-optimal, the AI will take the first win it sees.
+  // the AI is only effective if it takes a win over a tie or a loss and assumes you do too.
+  // `bestScore` is interesting because there is only one best score. 
+  // It keeps updating to -10, 10 or 2 depending on who the current player is.
+
+
+
+function bestAIMove() {
+    let bestScore = -10000
+    var move;
+    var parallelChoices = listParallelSpaces();
+  
+    for (var i = 0; i < parallelChoices.length; i++) {
+      playerOneTurn = false;
+      var parallelPick = parallelChoices[i];
+      parallelBoard.splice(parallelPick, 1, TWO_CLASS);
+      var score = minimax()
+      playerOneTurn = false;
+      parallelBoard.splice(parallelPick, 1, parallelPick);
+      if (score > bestScore) {
+        bestScore = score;
+        move = parallelPick;
+        } 
+    }
+  playerOneTurn = false;
+  parallelBoard.splice(move, 1, TWO_CLASS);
+  origBoard[move].classList.add(TWO_CLASS);
+  origBoard[move].innerHTML = TWO_CLASS;
+  if (playerhasWon()) {
+    declareWinner();
+    return
+    } 
+  if (isThereATie() == true) {
+  declareTie()
+  return
+  }
+  suggestedAIMove()
+  }
