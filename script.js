@@ -35,6 +35,7 @@ let itsTwoPlayerGame = false
 let isThereAWinner = true
 
 let player
+let depth
 let minimaxAvailable
 
 let score  // = 0
@@ -237,7 +238,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = minimax(parallelBoard, 4, player == playerOneTurn)
+        indexPick = minimax(parallelBoard, 4, !playerOneTurn)
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -509,20 +510,22 @@ function minimax(board, depth, player) {
             let j = minimaxAvailable[s]
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
-                console.log(parallelBoard[i][j])
                 parallelBoard[i].splice((j), 1, "Red")
-                let boardValue = minimax(parallelBoard, depth - 1, player == playerOneTurn)
+                //break?
+                let boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
+                console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
                 // this opens up a new minimax and sends it to the section below
                 // ad infinitum until the first section can evaluate
                 parallelBoard[i].splice((j), 1, gameboard[i][j])
                     if (boardValue > value) {
                         value = boardValue
-                        console.log("AI new value:" + value)
+                        console.log("maxer new value:" + value + " Depth:" + depth)
                         bestColumn = j
                     }
+                    else {console.log(boardValue + " not greater than " + value)}
                 }
+                break
         }
-        swapTurns()
         return bestColumn
         //no value
     }
@@ -534,137 +537,22 @@ function minimax(board, depth, player) {
             let j = minimaxAvailable[s]
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
-                console.log(parallelBoard[i][j])
                 parallelBoard[i].splice((j), 1, "Yellow")
-                let boardValue = minimax(parallelBoard, depth - 1, player == !playerOneTurn)
+                let boardValue = (minimax(parallelBoard, depth - 1, !playerOneTurn)) 
+                console.log("minzr idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
                 // this opens up a new minimax and sends it to the section below
                 parallelBoard[i].splice((j), 1, gameboard[i][j])
                     if (boardValue < value) {
                         value = boardValue
-                        console.log("P1 new value:" + value)
+                        console.log("minzr new value:" + value + " Depth:" + depth)
                         bestColumn = j
                     }
+                    else {console.log(boardValue + " not less than " + value)}
                 }
+                break
         }
-        swapTurns()
         return bestColumn
         // return (bestColumn, value)
     }
 };
 
-
-// function  minimax(node, depth, maximizingPlayer) is
-//     if depth = 0 or node is a terminal node then
-//         return the heuristic value of node
-//     if maximizingPlayer then
-//         value := −∞
-//         for each child of node do
-//             value := max(value, minimax(child, depth − 1, FALSE))
-//         return value
-//     else (* minimizing player *)
-//         value := +∞
-//         for each child of node do
-//             value := min(value, minimax(child, depth − 1, TRUE))
-//         return value
-
-
-  // minimax() fires when it is called by bestAIMove()
-  // (1) if neither checkwin() nor tie() is true, then swapTurns(), then ...
-  // (2) listParallelSpaces(), forloop over that array.
-  // (3) splice a marker into parallelboard, use minimax (on itself)
-  // this again goes to step 1, checking and swapping sides until there is a win. 
-  // if there is a score, `parallelBoard.splice(player2Pick, 1, player2Pick)` steps it back
-  // there is no swap, the board is tested again
-  // if there is no win, then again swapTurns() until there is a win
-  // and then again, step back, no swap, test again
-  // this goes until the `forloop` is done, and you get a score for one choice at bestAIMove()
-  // then bestAIMove() goes through its own forloop
-  // There is only one "score" and it is "best" depending on who is the player
-  
-  // so bestAIMove() starts with one choice and tests all possible combinations
-  // the `parallelPick` that gets the best score is turned into the `move`
-  // because the bestAIMove() does a forloop
-  // the `move` will always be the last relevant one in the array.
-  // there is a possibility that a move blocking a projected win is not the optimal move
-  // if the opponent does not do the optimal move. But because the board is so small, 
-  // if the opponent's move is sub-optimal, the AI will take the first win it sees.
-  // the AI is only effective if it takes a win over a tie or a loss and assumes you do too.
-  // `bestScore` is interesting because there is only one best score. 
-  // It keeps updating to -10, 10 or 2 depending on who the current player is.
-
-
-
-function bestAIMove() {
-    let bestScore = -10000
-    var move;
-    var parallelChoices = listParallelSpaces();
-  
-    for (var i = 0; i < parallelChoices.length; i++) {
-      playerOneTurn = false;
-      var parallelPick = parallelChoices[i];
-      parallelBoard.splice(parallelPick, 1, TWO_CLASS);
-      var score = minimax()
-      playerOneTurn = false;
-      parallelBoard.splice(parallelPick, 1, parallelPick);
-      if (score > bestScore) {
-        bestScore = score;
-        move = parallelPick;
-        } 
-    }
-  playerOneTurn = false;
-  parallelBoard.splice(move, 1, TWO_CLASS);
-  origBoard[move].classList.add(TWO_CLASS);
-  origBoard[move].innerHTML = TWO_CLASS;
-  if (playerhasWon()) {
-    declareWinner();
-    return
-    } 
-  if (isThereATie() == true) {
-  declareTie()
-  return
-  }
-  suggestedAIMove()
-  }
-
-
-  function minimaxTTT() {
-    if (newCheckWin() &&  playerOneTurn) {
-      return -10;
-    } else if (newCheckWin() && !playerOneTurn) {
-      return 10;
-    } else if (isThereATieParallel() === true) {
-      return 2;
-    }
-    swapTurns()  
-    if (!playerOneTurn) {
-      let bestScore = -10000; 
-      var player2Choices = listParallelSpaces();
-      for (var i = 0; i < player2Choices.length; i++) {
-        playerOneTurn = false
-        var player2Pick = player2Choices[i];
-        parallelBoard.splice(player2Pick, 1,TWO_CLASS);
-        var score = minimax(parallelBoard)
-        parallelBoard.splice(player2Pick, 1, player2Pick);
-        if (score > bestScore) {
-          bestScore = score
-        }
-        return bestScore
-      }
-    }
-    else {
-      let bestScore = 100000; 
-      var player1Choices = listParallelSpaces();
-  
-      for (var i = 0; i < player1Choices.length; i++) {
-        playerOneTurn = true
-        var player1Pick = player1Choices[i];
-        parallelBoard.splice(player1Pick, 1,ONE_CLASS);
-        var score = minimax(parallelBoard)
-        parallelBoard.splice(player1Pick, 1, player1Pick);
-        if (score < bestScore) {
-          bestScore = score
-        }
-        return bestScore
-      }
-    }
-};
