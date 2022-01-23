@@ -1,10 +1,3 @@
-// build minimax
-// clean up calendar, duolingo
-
-
-// clean up desktop and notes
-// i can turn this into an article on medium since there are no c4 JS minimax
-
 let gameboard = [
                  [1,2,3,4,5,6,7],
                  [8,9,10,11,12,13,14],
