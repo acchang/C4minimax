@@ -483,18 +483,15 @@ function minimax(board, depth, player) {
     minimaxAvailable = findAvailableIndexes(board) 
     if (isTerminalMode(board)) {
         if (isThereAWinner == true && !playerOneTurn){
-            // return (none, 10000000000)
             return 10000000000
             }
         else if (isThereAWinner == true && playerOneTurn){
-            // return (none, -10000000000)
             return -10000000000
             }
         else {return (none, 0)}
     }
     else if (depth == 0)
-        {return (scoreGameboard(board))}   
-        // {return (None, scoreGameboard(board))}   
+        {return (scoreGameboard(board))}  
 
     if (player == !playerOneTurn) { 
         value = Number.NEGATIVE_INFINITY 
@@ -520,7 +517,6 @@ function minimax(board, depth, player) {
                 break
         }
         return bestColumn
-        //no value
     }
 
     else if (player == playerOneTurn) {
@@ -531,7 +527,7 @@ function minimax(board, depth, player) {
             for (i = 5; i > -1; i--) 
                 if (Number.isInteger(parallelBoard[i][j])) {
                 parallelBoard[i].splice((j), 1, "Yellow")
-                let boardValue = (minimax(parallelBoard, depth - 1, !playerOneTurn)) 
+                let boardValue = (minimax(parallelBoard, depth - 1, !playerOneTurn)) * -1 
                 console.log("minzr idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
                 // this opens up a new minimax and sends it to the section below
                 parallelBoard[i].splice((j), 1, gameboard[i][j])
@@ -545,7 +541,6 @@ function minimax(board, depth, player) {
                 break
         }
         return bestColumn
-        // return (bestColumn, value)
     }
 };
 
