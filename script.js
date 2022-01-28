@@ -30,6 +30,7 @@ let isThereAWinner = true
 let player
 let depth
 let minimaxAvailable
+let boardValue
 
 let score  // = 0
 
@@ -226,36 +227,7 @@ function claimSpot(){
     }
 };
 
-function computerPlays() {
-    if (itsAOnePlayerGame == true) {
-        availableIndexes = findAvailableIndexes(gameboard)
-        console.log("AI: " + availableIndexes)
-        // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = minimax(parallelBoard, 4, !playerOneTurn)
-    }
-    else if (itsAHardGame == true)
-        { indexPick = pickBestMove() }
- 
 
-    let i;
-    for (i = 5; i > -1; i--) 
-        {if (Number.isInteger(gameboard[i][indexPick])) {
-            gameboard[i].splice((indexPick), 1, whosPlaying())
-            parallelBoard[i].splice((indexPick), 1, whosPlaying())
-            console.log("computerplays " + indexPick + " SG score is " + scoreGameboard(parallelBoard))
-            mainTable.innerHTML = ""
-            drawBoard()
-            checkForWinners() 
-            setTimeout(
-                function() {
-                swapTurns()
-                }, 
-            240)
-            break
-            }
-        }
-    
-};
 
 // if there is a string in row[0], that column is no longer available.
 // find available columns by creating a "newArray" and then "forEach" element in board[0], if it's an integer
@@ -477,70 +449,205 @@ function scoreGameboard(board){
 function isTerminalMode(board){
     if (isThereAWinner == true || [findAvailableIndexes(board)].length == 0)
     {return true}
-}
+};
 
-function minimax(board, depth, player) { 
-    minimaxAvailable = findAvailableIndexes(board) 
-    if (isTerminalMode(board)) {
-        if (isThereAWinner == true && !playerOneTurn){
-            return 10000000000
-            }
-        else if (isThereAWinner == true && playerOneTurn){
-            return -10000000000
-            }
-        else {return (none, 0)}
-    }
-    else if (depth == 0)
-        {return (scoreGameboard(board))}  
 
-    if (player == !playerOneTurn) { 
-        value = Number.NEGATIVE_INFINITY 
-        for (s=0; s<minimaxAvailable.length; s++) { 
-            let i;
-            let j = minimaxAvailable[s]
-            for (i = 5; i > -1; i--) 
-                if (Number.isInteger(parallelBoard[i][j])) {
-                parallelBoard[i].splice((j), 1, "Red")
-                //break?
-                let boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
-                console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
-                // this opens up a new minimax and sends it to the section below
-                // ad infinitum until the first section can evaluate
-                parallelBoard[i].splice((j), 1, gameboard[i][j])
-                    if (boardValue > value) {
-                        value = boardValue
-                        console.log("maxer new value:" + value + " Depth:" + depth)
-                        bestColumn = j
-                    }
-                    else {console.log(boardValue + " not greater than " + value)}
-                }
-                break
+function findOpenRow(board, column){
+    for (i = 5; i > -1; i--) {
+        if (Number.isInteger(board[i][column])) {
+            return i
         }
-        return bestColumn
-    }
-
-    else if (player == playerOneTurn) {
-        value = Number.POSITIVE_INFINITY 
-        for (s=0; s<minimaxAvailable.length; s++) { 
-            let i;
-            let j = minimaxAvailable[s]
-            for (i = 5; i > -1; i--) 
-                if (Number.isInteger(parallelBoard[i][j])) {
-                parallelBoard[i].splice((j), 1, "Yellow")
-                let boardValue = (minimax(parallelBoard, depth - 1, !playerOneTurn)) * -1 
-                console.log("minzr idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
-                // this opens up a new minimax and sends it to the section below
-                parallelBoard[i].splice((j), 1, gameboard[i][j])
-                    if (boardValue < value) {
-                        value = boardValue
-                        console.log("minzr new value:" + value + " Depth:" + depth)
-                        bestColumn = j
-                    }
-                    else {console.log(boardValue + " not less than " + value)}
-                }
-                break
-        }
-        return bestColumn
     }
 };
 
+
+function computerPlays() {
+    if (itsAOnePlayerGame == true) {
+        availableIndexes = findAvailableIndexes(gameboard)
+        console.log("AI chooses from: " + availableIndexes)
+        // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
+        indexPick = minimax(parallelBoard, 7, !playerOneTurn)
+    }
+    else if (itsAHardGame == true)
+        { indexPick = pickBestMove() }
+ 
+
+    let i;
+    for (i = 5; i > -1; i--) 
+        {if (Number.isInteger(gameboard[i][indexPick])) {
+            gameboard[i].splice((indexPick), 1, whosPlaying())
+            parallelBoard[i].splice((indexPick), 1, whosPlaying())
+            console.log("computerplays " + indexPick + " SG score is " + scoreGameboard(parallelBoard))
+            mainTable.innerHTML = ""
+            drawBoard()
+            checkForWinners() 
+            setTimeout(
+                function() {
+                swapTurns()
+                }, 
+            240)
+            break
+            }
+        }
+    
+};
+
+
+// for the available spots, insert a piece
+// call minimax (to check if terminal)
+
+
+function minimax(board, depth, player) { 
+    
+    if (isTerminalMode(board)) {
+        if (isThereAWinner == true && !playerOneTurn){
+            console.log("p2t")
+            return 10000000000
+            }
+        else if (isThereAWinner == true && playerOneTurn){
+            console.log("p1t")
+            return -10000000000
+            }
+        else {console.log("none")
+            return (none, 0)} 
+    }
+    else if (depth == 0)
+        {console.log("depth stage")
+        console.log("Final score: " + scoreGameboard(board))
+            return {score: scoreGameboard(board)} }  
+
+    if (player == !playerOneTurn) { 
+        value = Number.NEGATIVE_INFINITY 
+        minimaxAvailable = findAvailableIndexes(board) 
+
+        for (s=0; s<minimaxAvailable.length; s++) { 
+                let j = minimaxAvailable[s]
+                let i = findOpenRow(parallelBoard, j)
+                console.log("puts R token in:" + parallelBoard[i][j])
+                parallelBoard[i].splice((j), 1, "Red")
+                console.log("R score: " + scoreGameboard(parallelBoard))
+                boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
+                console.log(boardValue)
+                parallelBoard[i].splice((j), 1, gameboard[i][j])
+                console.log("red removed from:" + parallelBoard[i][j])
+        }
+
+            if (boardValue > value) {
+                value = boardValue
+                console.log("maxer new value:" + value + " Depth:" + depth)
+                bestColumn = j 
+            }
+            else {console.log(boardValue + " not greater than " + value)}
+    }
+
+    else if (player == playerOneTurn) { 
+        value = Number.POSITIVE_INFINITY 
+        minimaxAvailable = findAvailableIndexes(board) 
+
+        for (s=0; s<minimaxAvailable.length; s++) { 
+                let j = minimaxAvailable[s]
+                let i = findOpenRow(parallelBoard, j)
+                console.log("puts Y token in:" + parallelBoard[i][j])
+                parallelBoard[i].splice((j), 1, "Yellow")
+                console.log("Y score: " + scoreGameboard(parallelBoard))
+                boardValue = minimax(parallelBoard, depth - 1, !playerOneTurn)
+                console.log(boardValue)
+                parallelBoard[i].splice((j), 1, gameboard[i][j])
+                console.log("yellow removed from:" + parallelBoard[i][j])
+        }
+            if (boardValue > value) {
+                value = boardValue
+                console.log("maxer new value:" + value + " Depth:" + depth)
+                bestColumn = j 
+            }
+            else {console.log(boardValue + " not greater than " + value)}
+
+    }
+}
+
+// pseudocode
+
+// for the columns available 
+// red loops through the available spots
+
+
+// yellow 
+
+
+
+
+
+
+            
+                    //     console.log(parallelBoard[i][j])
+                    // parallelBoard[i].splice((j), 1, "Red")
+                    //     console.log(parallelBoard[i][j])
+                    // console.log(scoreGameboard(parallelBoard));
+                    // boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
+                    // console.log(boardValue)
+                    // break
+        
+        
+
+        // build a function: given an index, output the corresponding free space
+        // function findFreeSpace(j) outputs i
+        // 
+
+
+        // need 2 breaks to end the loop
+        // minimax may be starting in the middle because it keeps looping on itself
+        // use a counter? and see how many times it passes?
+
+                    // console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
+                    // // this opens up a new minimax and sends it to the section below
+                    // // ad infinitum until the first section can evaluate
+                    // parallelBoard[i].splice((j), 1, gameboard[i][j])
+                
+                    //     if (boardValue > value) {
+                    //         value = boardValue
+                    //         console.log("maxer new value:" + value + " Depth:" + depth)
+                    //         bestColumn = j 
+                    //     }
+                    //     else {console.log(boardValue + " not greater than " + value)}
+                    //     // break // in right place, but then it doesn't play the minzers
+//                 }
+//             }
+//                 break
+//         }
+//         return bestColumn
+//     }
+
+//     else if (playerOneTurn) {
+//         value = Number.POSITIVE_INFINITY 
+//         for (s=0; s<minimaxAvailable.length; s++) { 
+//             let i;
+//             let j = minimaxAvailable[s]
+//             for (i = 5; i > -1; i--) {
+//                 if (Number.isInteger(parallelBoard[i][j])) {
+//                         console.log(parallelBoard[i][j])
+//                     parallelBoard[i].splice((j), 1, "Yellow")
+//                         console.log(parallelBoard[i][j])
+//                         console.log(scoreGameboard(parallelBoard));
+//                         boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
+//                         console.log(boardValue)
+//                         break
+
+//                     // boardValue = (minimax(parallelBoard, depth - 1, !playerOneTurn)) * -1 
+//                     // console.log("minzr idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
+//                     // // this opens up a new minimax and sends it to the section below
+//                     // parallelBoard[i].splice((j), 1, gameboard[i][j])
+
+//                     //     if (boardValue < value) {
+//                     //         value = boardValue
+//                     //         console.log("minzr new value:" + value + " Depth:" + depth)
+//                     //         bestColumn = j
+//                     //     }
+//                     //     else {console.log(boardValue + " not less than " + value)}
+//                     //     // break
+//                 }
+//                 break
+//             }
+//         return bestColumn
+//         }
+//     }
+// };
