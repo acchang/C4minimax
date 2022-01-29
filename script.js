@@ -466,7 +466,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = minimax(parallelBoard, 7, !playerOneTurn)
+        indexPick = minimax(parallelBoard, 6, !playerOneTurn)
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -488,24 +488,100 @@ function computerPlays() {
             240)
             break
             }
-        }
-    
+        }    
 };
 
 
-// for the available spots, insert a piece
-// call minimax (to check if terminal)
 
+
+
+
+// ********
+// this is ok but it's making 4 random moves and then minimax to decide what's the best
+// each of the moves needs to be scored moves and then minimax
+// or each needs to be minimaxed but stop at 4 trees
+// or it makes 4 moves and then stops and tests at each level
 
 function minimax(board, depth, player) { 
-    
+    console.log("depth:" + depth)
     if (isTerminalMode(board)) {
         if (isThereAWinner == true && !playerOneTurn){
-            console.log("p2t")
             return 10000000000
             }
         else if (isThereAWinner == true && playerOneTurn){
-            console.log("p1t")
+            return -10000000000
+            }
+        else {return (none, 0)}
+    }
+    else if (depth == 0)
+        {return (scoreGameboard(board))}   
+
+    if (player == !playerOneTurn) { 
+        minimaxAvailable = findAvailableIndexes(board) 
+        value = Number.NEGATIVE_INFINITY 
+        for (s=0; s<minimaxAvailable.length; s++) { 
+            let j = minimaxAvailable[Math.floor(Math.random()*minimaxAvailable.length)];
+            let i = findOpenRow(parallelBoard, j)
+            console.log("R puts token in:" + parallelBoard[i][j])
+            parallelBoard[i].splice((j), 1, "Red")
+            console.log("R score: " + scoreGameboard(parallelBoard))
+            boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
+            console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
+            parallelBoard[i].splice((j), 1, gameboard[i][j])
+                if (boardValue > value) {
+                    value = boardValue
+                    console.log("maxer new value:" + value + " Depth:" + depth)
+                    bestColumn = j
+                    }
+                    else {console.log(boardValue + " not greater than " + value)}
+                }
+        return bestColumn
+    }
+
+    else if (player == playerOneTurn) {
+        minimaxAvailable = findAvailableIndexes(board) 
+        value = Number.POSITIVE_INFINITY 
+        for (s=0; s<minimaxAvailable.length; s++) { 
+            let j = minimaxAvailable[Math.floor(Math.random()*minimaxAvailable.length)];
+            let i = findOpenRow(parallelBoard, j)
+            console.log("Y puts token in:" + parallelBoard[i][j])
+            parallelBoard[i].splice((j), 1, "Yellow")
+            console.log("Y score: " + (scoreGameboard(parallelBoard)) )
+            boardValue = minimax(parallelBoard, depth - 1, !playerOneTurn) 
+            console.log("minzer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
+            parallelBoard[i].splice((j), 1, gameboard[i][j])
+                if (boardValue < value) {
+                    value = boardValue
+                    console.log("minzer new value:" + value + " Depth:" + depth)
+                    bestColumn = j
+                    }
+                    else {console.log(boardValue + " not less than " + value)}
+                }
+        return bestColumn
+    }
+};
+
+
+
+
+
+
+
+
+
+
+// it keeps putting in at 0 because it's choosing from minimax available anew
+// and that will always have a zero until it does not.
+// so do I choose at random from minimaxAvailable?
+
+
+
+function minimax1(board, depth, player) {     
+    if (isTerminalMode(board)) {
+        if (isThereAWinner == true && !playerOneTurn){
+            return 10000000000
+            }
+        else if (isThereAWinner == true && playerOneTurn){
             return -10000000000
             }
         else {console.log("none")
@@ -514,30 +590,33 @@ function minimax(board, depth, player) {
     else if (depth == 0)
         {console.log("depth stage")
         console.log("Final score: " + scoreGameboard(board))
-            return {score: scoreGameboard(board)} }  
+            return {score:scoreGameboard(board)}}
 
     if (player == !playerOneTurn) { 
         value = Number.NEGATIVE_INFINITY 
         minimaxAvailable = findAvailableIndexes(board) 
 
         for (s=0; s<minimaxAvailable.length; s++) { 
-                let j = minimaxAvailable[s]
+                let j = minimaxAvailable[Math.floor(Math.random()*minimaxAvailable.length)];
+                
+                // minimaxAvailable[s]
                 let i = findOpenRow(parallelBoard, j)
                 console.log("puts R token in:" + parallelBoard[i][j])
                 parallelBoard[i].splice((j), 1, "Red")
                 console.log("R score: " + scoreGameboard(parallelBoard))
                 boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
-                console.log(boardValue)
+                console.log(boardValue.score)
                 parallelBoard[i].splice((j), 1, gameboard[i][j])
                 console.log("red removed from:" + parallelBoard[i][j])
-        }
 
-            if (boardValue > value) {
-                value = boardValue
+                if (boardValue > value) {
+                value = boardValue.score
                 console.log("maxer new value:" + value + " Depth:" + depth)
                 bestColumn = j 
-            }
-            else {console.log(boardValue + " not greater than " + value)}
+                return bestColumn
+                }
+                else {console.log(boardValue.score + " not greater than " + value)}       
+        }
     }
 
     else if (player == playerOneTurn) { 
@@ -545,53 +624,32 @@ function minimax(board, depth, player) {
         minimaxAvailable = findAvailableIndexes(board) 
 
         for (s=0; s<minimaxAvailable.length; s++) { 
-                let j = minimaxAvailable[s]
+                let j = minimaxAvailable[Math.floor(Math.random()*minimaxAvailable.length)];
+                // let j = minimaxAvailable[s]
                 let i = findOpenRow(parallelBoard, j)
                 console.log("puts Y token in:" + parallelBoard[i][j])
                 parallelBoard[i].splice((j), 1, "Yellow")
                 console.log("Y score: " + scoreGameboard(parallelBoard))
                 boardValue = minimax(parallelBoard, depth - 1, !playerOneTurn)
-                console.log(boardValue)
+                console.log(boardValue.score) // returning nothing
                 parallelBoard[i].splice((j), 1, gameboard[i][j])
                 console.log("yellow removed from:" + parallelBoard[i][j])
-        }
-            if (boardValue > value) {
-                value = boardValue
+        
+                if (boardValue > value) {
+                value = boardValue.score
                 console.log("maxer new value:" + value + " Depth:" + depth)
                 bestColumn = j 
+                return bestColumn
             }
-            else {console.log(boardValue + " not greater than " + value)}
-
+            else {console.log(boardValue.score + " not greater than " + value)}
+        } 
     }
-}
-
-// pseudocode
-
-// for the columns available 
-// red loops through the available spots
-
-
-// yellow 
+};
 
 
 
 
 
-
-            
-                    //     console.log(parallelBoard[i][j])
-                    // parallelBoard[i].splice((j), 1, "Red")
-                    //     console.log(parallelBoard[i][j])
-                    // console.log(scoreGameboard(parallelBoard));
-                    // boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
-                    // console.log(boardValue)
-                    // break
-        
-        
-
-        // build a function: given an index, output the corresponding free space
-        // function findFreeSpace(j) outputs i
-        // 
 
 
         // need 2 breaks to end the loop
