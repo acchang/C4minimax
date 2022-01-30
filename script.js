@@ -394,6 +394,8 @@ function scoreTheArray(array) {
     else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
     else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -500}
     else if ((array.reduce(countOpponentMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return -250}
+    // added and changed scoring to be symmetrical, formerly -500, -250
+    // else if (array.reduce(countOpponentMarkers, 0) === 4){return -1000}
     else {return 0}
 };
 
@@ -466,7 +468,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = minimax(parallelBoard, 6, !playerOneTurn)
+        indexPick = minimax(parallelBoard, 2, !playerOneTurn)
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -497,13 +499,17 @@ function computerPlays() {
 
 
 // ********
-// this is ok but it's making 4 random moves and then minimax to decide what's the best
-// each of the moves needs to be scored moves and then minimax
-// or each needs to be minimaxed but stop at 4 trees
-// or it makes 4 moves and then stops and tests at each level
 
-function minimax(board, depth, player) { 
+// It's moving through and the score totals seem right but the behavior is wrong
+// I still have to step throuhg and understand why
+
+// at depth 2, it's minimaxing right, going through all the trees
+// at higher depths it does not climb to higher levels
+// past depth 6 as well, the splice fails bc going up but cannot
+
+function minimax(board, depth, player) {
     console.log("depth:" + depth)
+    minimaxAvailable = findAvailableIndexes(board) 
     if (isTerminalMode(board)) {
         if (isThereAWinner == true && !playerOneTurn){
             return 10000000000
@@ -511,52 +517,57 @@ function minimax(board, depth, player) {
         else if (isThereAWinner == true && playerOneTurn){
             return -10000000000
             }
-        else {return (none, 0)}
+        else {return (0)}
     }
-    else if (depth == 0)
-        {return (scoreGameboard(board))}   
+    else if (depth == 0 //&& playerOneTurn
+        )
+        {return (scoreGameboard(board))}
+    // else if (depth == 0 && !playerOneTurn)  
+        // {return (scoreGameboard(board)) * -1}
 
     if (player == !playerOneTurn) { 
-        minimaxAvailable = findAvailableIndexes(board) 
         value = Number.NEGATIVE_INFINITY 
         for (s=0; s<minimaxAvailable.length; s++) { 
-            let j = minimaxAvailable[Math.floor(Math.random()*minimaxAvailable.length)];
+            let j = s
             let i = findOpenRow(parallelBoard, j)
-            console.log("R puts token in:" + parallelBoard[i][j])
+            console.log("s max:" + s)
             parallelBoard[i].splice((j), 1, "Red")
-            console.log("R score: " + scoreGameboard(parallelBoard))
+            console.log("R token in:" + [j] + " #" + gameboard[i][j] + " pts:" + (scoreGameboard(parallelBoard)))
             boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
-            console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
+            console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue + " depth:" + depth)
             parallelBoard[i].splice((j), 1, gameboard[i][j])
-                if (boardValue > value) {
-                    value = boardValue
-                    console.log("maxer new value:" + value + " Depth:" + depth)
-                    bestColumn = j
-                    }
-                    else {console.log(boardValue + " not greater than " + value)}
-                }
-        return bestColumn
+            if (boardValue > value) {
+                value = boardValue
+                console.log("maxer new value:" + value + " Depth:" + depth)
+                bestColumn = j
+            }
+            else {console.log(boardValue + " not greater than " + value)}
+            
+        }
+        console.log("s max:" + s + " bestCol:" + bestColumn + " Depth:" + depth)
+        return bestColumn 
     }
 
     else if (player == playerOneTurn) {
-        minimaxAvailable = findAvailableIndexes(board) 
         value = Number.POSITIVE_INFINITY 
-        for (s=0; s<minimaxAvailable.length; s++) { 
-            let j = minimaxAvailable[Math.floor(Math.random()*minimaxAvailable.length)];
+        for (z=0; z<minimaxAvailable.length; z++) { 
+            let j = z
             let i = findOpenRow(parallelBoard, j)
-            console.log("Y puts token in:" + parallelBoard[i][j])
+            console.log("z min:" + s)
             parallelBoard[i].splice((j), 1, "Yellow")
-            console.log("Y score: " + (scoreGameboard(parallelBoard)) )
-            boardValue = minimax(parallelBoard, depth - 1, !playerOneTurn) 
-            console.log("minzer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue )
+            console.log("Y token in:" + [j] + " #" + gameboard[i][j] + " pts:" + (scoreGameboard(parallelBoard)))
+            boardValue = minimax(parallelBoard, depth - 1, !playerOneTurn) *1
+            console.log("minzer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue  + " depth:" + depth)
             parallelBoard[i].splice((j), 1, gameboard[i][j])
-                if (boardValue < value) {
-                    value = boardValue
-                    console.log("minzer new value:" + value + " Depth:" + depth)
-                    bestColumn = j
-                    }
-                    else {console.log(boardValue + " not less than " + value)}
-                }
+            if (boardValue < value) {
+                value = boardValue
+                console.log("minzer new value:" + value + " Depth:" + depth)
+                bestColumn = j
+            }
+            else {console.log(boardValue + " not less than " + value)}
+            
+        }
+        console.log("z min:" + z + " bestCol:" + bestColumn + " Depth:" + depth)
         return bestColumn
     }
 };
@@ -566,14 +577,7 @@ function minimax(board, depth, player) {
 
 
 
-
-
-
-
-// it keeps putting in at 0 because it's choosing from minimax available anew
-// and that will always have a zero until it does not.
-// so do I choose at random from minimaxAvailable?
-
+// ----------
 
 
 function minimax1(board, depth, player) {     
