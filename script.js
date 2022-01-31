@@ -321,9 +321,6 @@ function horizontalCheck() {
 
 
 // Game-playing AI
-// reassess these scorers bc they're all triple-counting when they have room
-// they only single-count when at edge and nowhere to go
-// but side spaces should get more points, more plays.
 
 function assessHorizWindows(board) {
     let horizTotal = 0
@@ -468,7 +465,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = minimax(parallelBoard, 2, !playerOneTurn)
+        indexPick = (minimax(parallelBoard, 2, !playerOneTurn)).special
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -495,6 +492,101 @@ function computerPlays() {
 
 
 
+// this one is building the trees correctly and ordering the results
+// I just don't know how to extract that one move 
+// because the last line feeds into the first
+// so make the return the same as the input
+// it does give the right answer; I may need to return score and play
+// plus at depth 4, it starts going up column 0 without switches again
+// extracting with .special works (or try a best move)
+// but it still crashes somewhere deep into the game
+
+
+
+function minimax(board, depth, player) {
+    console.log("initial depth:" + depth)
+    minimaxAvailable = findAvailableIndexes(board) 
+
+    if (isTerminalMode(board)) {
+        if (isThereAWinner == true && player == playerOneTurn){
+            return {score: -10000000000}
+            }
+        else if (isThereAWinner == true && player == !playerOneTurn){
+            return {score: 10000000000}
+            }
+        else {return {score:0}}
+    }
+
+    else if (depth == 0) //&& playerOneTurn
+        {console.log("score depth:" + depth)
+            return {score: scoreGameboard(board)} 
+        }
+
+  let moves = [];
+  let result
+
+  for (var j = 0; j < minimaxAvailable.length; j++){
+        let i = findOpenRow(board, j)
+        let move = {};
+        move.special = j
+  	    move.index = board[minimaxAvailable[i]]
+
+            if (player == playerOneTurn){
+            console.log("yellow:" + gameboard[i][j] + " depth:" + depth)
+            board[i].splice((j), 1, "Yellow")
+            }
+            else if (player == !playerOneTurn){
+            console.log("red:" + gameboard[i][j] + " depth:" + depth)
+            board[i].splice((j), 1, "Red")
+            }
+
+            if (player == !playerOneTurn){
+            result = minimax(board, depth-1, player == playerOneTurn)
+            console.log("score:" + result.score)
+            move.score = result.score;
+            }
+            else {
+            result = minimax(board, depth-1, player == !playerOneTurn)
+            console.log("score:" + result.score)
+            move.score = result.score;
+            }
+    board[i].splice((j), 1, gameboard[i][j])
+    moves.push(move);
+  }
+
+let bestMove;
+
+if(player == !playerOneTurn){
+  let bestScore = -1000000000;
+  for(var k = 0; k < moves.length; k++){
+    if(moves[k].score > bestScore){
+        console.log(moves[k].score + " bigger than " + bestScore)
+      bestScore = moves[k].score;
+      bestMove = k;
+    }
+  }
+}else{ 
+    let bestScore = 10000000;
+    for(let k = 0; k < moves.length; k++){
+    if(moves[k].score < bestScore){
+        console.log(moves[k].score + " smaller than " + bestScore)
+      bestScore = moves[k].score;
+      console.log("bestScore:" + bestScore)
+      bestMove = k;
+      console.log("bestMove:" + bestMove)
+    }
+  }
+}
+
+console.log("moves:" + moves + "bestMove:" + bestMove)
+let answer = moves[bestMove].special
+console.log(answer)
+console.log("best score:" + moves[bestMove].score)
+return moves[bestMove]
+
+}
+
+
 
 
 
@@ -506,9 +598,17 @@ function computerPlays() {
 // at depth 2, it's minimaxing right, going through all the trees
 // at higher depths it does not climb to higher levels
 // past depth 6 as well, the splice fails bc going up but cannot
+// multiplying by -1 does not work because in minimizer, you want to start 1M and go towards 0
+// A -750 score is better than a -250 score, and that's what the minimizer wants
+// but the maximizer should be choosing the -250 score of what the minimizer places
+// minimizer should prefer -750 to -250 to 0, multply by -1, you get 750, 250, 0
+// then maxmizer prefers 750 to 250 to 0
+// it'sonly finding the optimal Y for a given R but not letting R compare
 
-function minimax(board, depth, player) {
-    console.log("depth:" + depth)
+// the tree is not fully built wither
+
+function minimax0(board, depth, player) {
+    console.log("initial depth:" + depth)
     minimaxAvailable = findAvailableIndexes(board) 
     if (isTerminalMode(board)) {
         if (isThereAWinner == true && !playerOneTurn){
@@ -533,7 +633,7 @@ function minimax(board, depth, player) {
             console.log("s max:" + s)
             parallelBoard[i].splice((j), 1, "Red")
             console.log("R token in:" + [j] + " #" + gameboard[i][j] + " pts:" + (scoreGameboard(parallelBoard)))
-            boardValue = minimax(parallelBoard, depth - 1, playerOneTurn)
+            boardValue = parseInt(minimax(parallelBoard, depth - 1, playerOneTurn))
             console.log("maxer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue + " depth:" + depth)
             parallelBoard[i].splice((j), 1, gameboard[i][j])
             if (boardValue > value) {
@@ -555,9 +655,10 @@ function minimax(board, depth, player) {
             let i = findOpenRow(parallelBoard, j)
             console.log("z min:" + s)
             parallelBoard[i].splice((j), 1, "Yellow")
-            console.log("Y token in:" + [j] + " #" + gameboard[i][j] + " pts:" + (scoreGameboard(parallelBoard)))
-            boardValue = minimax(parallelBoard, depth - 1, !playerOneTurn) *1
+            console.log("Y token in:" + [j] + " #" + gameboard[i][j] + " pts:" + ([scoreGameboard(parallelBoard)]))
+            boardValue = parseInt(minimax(parallelBoard, depth - 1, !playerOneTurn))
             console.log("minzer idx:" + j + " spot:" + gameboard[i][j] + " pts:" + boardValue  + " depth:" + depth)
+            console.log("value:" + value)
             parallelBoard[i].splice((j), 1, gameboard[i][j])
             if (boardValue < value) {
                 value = boardValue
