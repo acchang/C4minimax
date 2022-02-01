@@ -465,7 +465,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = (minimax(parallelBoard, 2, !playerOneTurn)).special
+        indexPick = (minimax(parallelBoard, 4, !playerOneTurn)).special
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -500,7 +500,14 @@ function computerPlays() {
 // plus at depth 4, it starts going up column 0 without switches again
 // extracting with .special works (or try a best move)
 // but it still crashes somewhere deep into the game
+// depth 2 is still too dumb too
+// and token reappears for player to cheat
 
+// crashing due to a depth issue after 4 tokens
+// 6 depth doesn't even make first round and crashes
+// 2 depth gets to 5 tokens (row 1)
+// 4 depth gets to 5 tokens if all on row 6
+// only gets 2 tokens when rising vertically
 
 
 function minimax(board, depth, player) {
@@ -605,7 +612,7 @@ return moves[bestMove]
 // then maxmizer prefers 750 to 250 to 0
 // it'sonly finding the optimal Y for a given R but not letting R compare
 
-// the tree is not fully built wither
+// the tree is not fully built either,
 
 function minimax0(board, depth, player) {
     console.log("initial depth:" + depth)
