@@ -1,5 +1,7 @@
 # C4minimax
 
+2/7 ok, maybe it's time to move on. Or I will try one last time.
+
 1/28
 It turns out I should not be multiplying the score by -1, makes it more confusing. The score is just scored from the AI or Red's perspective. That way, Red/maximizer wants higher, Yellow/minimizer wants lower, simple as that? But Red is incentivized to ger 4 in a row, Yellow is not. 
 
