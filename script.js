@@ -597,7 +597,7 @@ return moves[bestMove]
 
 
 
-// ********
+// *****
 
 // It's moving through and the score totals seem right but the behavior is wrong
 // I still have to step throuhg and understand why
