@@ -490,7 +490,7 @@ function computerPlays() {
         }    
 };
 
-// Minimax process is right 
+// Minimax process works
 // but at 2 depth but crashes, 3, t
 // number of tokens doesn't matter, as low as 4, up to 7 placed
 // can't get past row 2 but sometimes crashes before that
