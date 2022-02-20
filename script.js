@@ -465,7 +465,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = (minimax(parallelBoard, 4, !playerOneTurn)).special
+        indexPick = (minimax(parallelBoard, 2, !playerOneTurn)).special
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -524,7 +524,7 @@ function minimax(board, depth, player) {
   	    move.index = board[minimaxAvailable[i]] // not sure if this even needed. 
 
             if (player == playerOneTurn){
-            console.log("yellow:" + gameboard[i][j] + " depth:" + depth)
+            // console.log("yellow:" + gameboard[i][j] + " depth:" + depth)
             board[i].splice((j), 1, "Yellow")
             }
             else if (player == !playerOneTurn){
