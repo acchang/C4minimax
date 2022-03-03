@@ -465,7 +465,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = (minimax(parallelBoard, 2, !playerOneTurn)).special
+        indexPick = (minimax(parallelBoard, 2, !playerOneTurn)).move
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -490,12 +490,191 @@ function computerPlays() {
         }    
 };
 
+
+
+
+
+
+
+
+function getBoardState(board) {    
+    let numPlayerMoves = 0;
+    let numComputerMoves = 0;
+    
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            if (board[i][j] === "Yellow")
+                numPlayerMoves++;
+            if (board[i][j] === "Red")
+                numComputerMoves++;
+        }
+    }
+    
+    let isPlayerTurn = (numPlayerMoves === numComputerMoves)
+
+
+    // replace with my own scoring algo 
+    let isInbound = function (boardLocation) {
+    return 0 <= boardLocation.i && boardLocation.i < board.length
+    && 0 <= boardLocation.j && boardLocation.j < board[0].length;
+    };
+    
+    let check4 = function (location1, location2, location3, location4) {
+    if (!isInbound(location1) || !isInbound(location2) || !isInbound(location3) || !isInbound(location4))
+    return null;
+    
+    let location1Move = board[location1.i][location1.j];
+    let location2Move = board[location2.i][location2.j];
+    let location3Move = board[location3.i][location3.j];
+    let location4Move = board[location4.i][location4.j];
+    
+    if (location1Move === "Yellow" && location2Move === "Yellow" && location3Move === "Yellow" && location4Move === "Yellow")
+        return "Yellow";
+    if (location1Move === "Red" && location2Move === "Red" && location3Move === "Red" && location4Move === "Red")
+        return "Red";
+    
+    return null;
+    };
+
+    
+    let hasPlayerWon = false;
+    let hasComputerWon = false;
+    
+    let directions = [
+    [1, 0], /* a horizontal win */
+    [0, 1], /* a vertical win */
+    [1, 1], /* a diagonal win */
+    [1, -1] /* a diagonal win (in the other direction) */
+    ];
+    
+    for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+    for (let direction of directions) {
+    
+       let location1 = { i: i + direction[0] * 0, j: j + direction[1] * 0 };
+       let location2 = { i: i + direction[0] * 1, j: j + direction[1] * 1 };
+       let location3 = { i: i + direction[0] * 2, j: j + direction[1] * 2 };
+       let location4 = { i: i + direction[0] * 3, j: j + direction[1] * 3 };
+     
+       let possibleWinner = check4(location1, location2, location3, location4);
+       
+       if (possibleWinner === "Yellow")
+           hasPlayerWon = true;
+       if (possibleWinner === "Red")
+           hasComputerWon = true;
+    }
+    }
+    };
+    
+    return {
+    moves: hasPlayerWon || hasComputerWon ? [] : findAvailableIndexes(board),
+    isPlayerTurn: isPlayerTurn,
+    hasPlayerWon: hasPlayerWon,
+    hasComputerWon: hasComputerWon
+    }
+};
+
+
+function evaluateBoardPosition(board) {
+    //  add in my own
+    return 0;
+    }
+
+
+
+function applyMove(board, move, isPlayerTurn) {
+    let i = board.length - 1;
+    while (true) {
+        if (board[i][move] !== "Yellow" && board[i][move] !== "Red") {
+        board[i][move] = ( isPlayerTurn ? "Yellow" : "Red" );
+        return;
+        }
+    i--;
+    }
+};
+
+function unapplyMove(board, move) {
+    let i = 0;
+    while (true) {
+        if (board[i][move] === "Yellow" || board[i][move] === "Red") {
+        board[i][move] = i * 7 + move + 1;
+        return;
+        }
+    i++;
+    }
+};
+
+
+function minimax(board, depth) {
+
+let boardState = getBoardState(board);
+let moves = boardState.moves;
+let isPlayerTurn = boardState.isPlayerTurn;
+let hasPlayerWon = boardState.hasPlayerWon;
+let hasComputerWon = boardState.hasComputerWon;
+
+if (depth === 0)
+return { score: evaluateBoardPosition(board) };
+
+if (hasPlayerWon) 
+return { score: -10000000000 - depth };
+
+if (hasComputerWon)
+return { score: 10000000000 + depth };
+
+if (moves.length === 0)
+return { score: 0 };
+
+if (!isPlayerTurn) {
+    let bestMoveFoundSoFar = null;
+    let bestScoreFoundSoFar = -Infinity;
+
+    for (let move of moves) {
+        applyMove(board, move, isPlayerTurn);
+        let scoreOfThisMove = minimax(board, depth - 1).score;
+        unapplyMove(board, move);
+
+        if (scoreOfThisMove > bestScoreFoundSoFar) {
+            bestScoreFoundSoFar = scoreOfThisMove;
+            bestMoveFoundSoFar = move;
+        }   
+    } 
+
+    return { score: bestScoreFoundSoFar, special: bestMoveFoundSoFar };
+} else {
+        let bestMoveFoundSoFar = null;
+        let bestScoreFoundSoFar = Infinity;
+
+    for (let move of moves) {
+    applyMove(board, move, isPlayerTurn);
+    let scoreOfThisMove = minimax(board, depth - 1).score;
+    unapplyMove(board, move);
+
+        if (scoreOfThisMove < bestScoreFoundSoFar) {
+        bestScoreFoundSoFar = scoreOfThisMove;
+        bestMoveFoundSoFar = move;
+        }
+    }
+
+return { score: bestScoreFoundSoFar, move: bestMoveFoundSoFar };
+}
+}
+
+
+
+
+
+
+
+
+
+
 // Minimax process works
 // but at 2 depth but crashes, 3, t
 // number of tokens doesn't matter, as low as 4, up to 7 placed
 // can't get past row 2 but sometimes crashes before that
 
-function minimax(board, depth, player) {
+function OLDminimax(board, depth, player) {
     console.log("initial depth:" + depth)
     minimaxAvailable = findAvailableIndexes(board) 
 
