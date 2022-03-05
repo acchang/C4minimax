@@ -465,7 +465,7 @@ function computerPlays() {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
         // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = (minimax(parallelBoard, 6, !playerOneTurn)).move
+        indexPick = (minimax(parallelBoard, 4, !playerOneTurn)).move
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
@@ -492,55 +492,6 @@ function computerPlays() {
 
 
 
-function boardStateUprightCheck(board) {
-    for (r=5; r>2; r--) {
-        for (c=0; c<4; c++){
-            if (findFour(board[r][c],board[r-1][c+1],board[r-2][c+2],board[r-3][c+3])) {
-                if (isPlayerTurn == true){hasPlayerWon = true}
-                else if (isPlayerTurn == false){hasComputerWon = true}
-            }
-        }
-    }
-};
-
-
-function boardStateDownrightCheck(board) {
-    for (r=0; r<3; r++) {
-        for (c=0; c<4; c++){
-            if (findFour(board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3])) {
-                if (isPlayerTurn == true){hasPlayerWon = true}
-                else if (isPlayerTurn == false){hasComputerWon = true}
-            }
-        }
-    }
-};
-
-
-function boardStateVerticalCheck(board) {
-    for (r=5; r>2; r--) {
-        for (c=0; c<7; c++){
-            if (findFour(board[r][c], board[r-1][c], board[r-2][c], board[r-3][c])) {
-                if (isPlayerTurn == true){hasPlayerWon = true}
-                else if (isPlayerTurn == false){hasComputerWon = true}
-            }
-        }
-    }
-};
-
-function boardStateHorizontalCheck(board) {
-    for (r=0; r<6; r++) {
-        for (c=0; c<4; c++){
-            if (findFour(board[r][c], board[r][c+1], board[r][c+2], board[r][c+3])) {
-                if (isPlayerTurn == true){hasPlayerWon = true}
-                else if (isPlayerTurn == false){hasComputerWon = true}
-            }
-        }
-    }
-};
-
-
-
-
 function getBoardState(board) {    
     let numPlayerMoves = 0;
     let numComputerMoves = 0;
@@ -563,10 +514,6 @@ true or false for
     hasPlayerWon: hasPlayerWon,
     hasComputerWon: hasComputerWon
 --------*/
-
-
-
-
 
     /* replace with my own scoring algo 
     let isInbound = function (boardLocation) {
@@ -591,64 +538,7 @@ true or false for
     return null;
         };*/
 
-    let hasPlayerWon = false;
-    let hasComputerWon = false;
 
-    // boardStateUprightCheck(board)
-    // boardStateDownrightCheck(board)
-    // boardStateVerticalCheck(board)
-    // boardStateHorizontalCheck(board)
-
-
-    for (r=5; r>2; r--) {
-        for (c=0; c<4; c++){
-            if (findFour(board[r][c],board[r-1][c+1],board[r-2][c+2],board[r-3][c+3])) {
-                if (isPlayerTurn){
-                    hasPlayerWon = true
-                }
-                else if (!isPlayerTurn){
-                    hasComputerWon = true
-                }
-            }
-        }
-    }
-
-    for (r=0; r<3; r++) {
-        for (c=0; c<4; c++){
-            if (findFour(board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3])) {
-                if (isPlayerTurn){hasPlayerWon = true}
-                else if (!isPlayerTurn){hasComputerWon = true}
-            }
-        }
-    }
-
-// it's not recognizing the computer half of the algo ******
-
-    for (r=5; r>2; r--) {
-        for (c=0; c<7; c++){
-            if (findFour(board[r][c], board[r-1][c], board[r-2][c], board[r-3][c])) {
-                if (isPlayerTurn){
-                    hasPlayerWon = true
-                    console.log("HPW is " + hasPlayerWon)
-                }
-                else if (isPlayerTurn == false){
-                    // hasComputerWon = true
-                    console.log("HCW")
-                }
-            }
-        }
-    }
-
-    for (r=0; r<6; r++) {
-        for (c=0; c<4; c++){
-            if (findFour(board[r][c], board[r][c+1], board[r][c+2], board[r][c+3])) {
-                if (isPlayerTurn){hasPlayerWon = true}
-                else if (!isPlayerTurn){hasComputerWon = true}
-            }
-        }
-    }
-    
-    
     // let directions = [
     // [1, 0], /* a horizontal win */
     // [0, 1], /* a vertical win */
@@ -677,6 +567,64 @@ true or false for
     };
 */
 
+// the new way of checking is not outputting as many as Dtsudo's
+// it's also not choosing smartly but persistently moving up the left side. why?
+// bc the checking in mine is serial whereas he uses a for/of loop?
+// but the for loop does the same thing!
+
+
+
+
+    let hasPlayerWon = false;
+    let hasComputerWon = false;
+
+{
+    // boardStateUprightCheck(board) -- goes thru and searches direction, declares a winnner
+    for (r=5; r>2; r--) {
+        for (c=0; c<4; c++){
+            if (board[r][c] == board[r-1][c+1] && board[r][c] == board[r-2][c+2] && board[r][c] == board[r-3][c+3]) {
+                if (isPlayerTurn){hasPlayerWon = true}
+                else if (!isPlayerTurn){hasComputerWon = true}
+            }
+        }
+    }
+
+    // boardStateDownrightCheck(board)
+    for (r=0; r<3; r++) {
+        for (c=0; c<4; c++){
+            if (board[r][c] == board[r+1][c+1] && board[r][c] == board[r+2][c+2] && board[r][c] == board[r+3][c+3]) {
+                if (isPlayerTurn){hasPlayerWon = true}
+                else if (!isPlayerTurn){hasComputerWon = true}
+            }
+        }
+    }
+
+    // boardStateVerticalCheck(board)
+    for (r=5; r>2; r--) {
+        for (c=0; c<7; c++){
+            if (board[r][c] == board[r-1][c] && board[r][c] == board[r-2][c] && board[r][c] == board[r-3][c]) {
+                if (isPlayerTurn){
+                    hasPlayerWon = true
+                }
+                else if (isPlayerTurn == false){
+                    hasComputerWon = true
+                }
+            }
+        }
+    }
+
+    // boardStateHorizontalCheck(board)
+    for (r=0; r<6; r++) {
+        for (c=0; c<4; c++){
+            if (board[r][c] == board[r][c+1] && board[r][c] == board[r][c+2] && board[r][c] == board[r][c+3]) {
+                if (isPlayerTurn){hasPlayerWon = true}
+                else if (!isPlayerTurn){hasComputerWon = true}
+            }
+        }
+    }
+
+}
+
     return {
     moves: hasPlayerWon || hasComputerWon ? [] : findAvailableIndexes(board),
     isPlayerTurn: isPlayerTurn,
@@ -684,6 +632,7 @@ true or false for
     hasComputerWon: hasComputerWon
     }
 };
+
 
 function applyMove(board, move, isPlayerTurn) {
     let i = board.length - 1;
@@ -726,11 +675,13 @@ let hasComputerWon = boardState.hasComputerWon;
 if (depth === 0)
 return { score: evaluateBoardPosition(board) };
 
-if (hasPlayerWon)   
+if (hasPlayerWon)   {
+console.log("PW")
 return { score: -10000000000 - depth }
+}
 
 if (hasComputerWon) {
-console.log("HCW is " + hasComputerWon) 
+console.log("CW") 
 return { score: 10000000000 + depth }
 }
 
@@ -749,10 +700,12 @@ if (!isPlayerTurn) {
         if (scoreOfThisMove > bestScoreFoundSoFar) {
             bestScoreFoundSoFar = scoreOfThisMove;
             bestMoveFoundSoFar = move;
+            console.log("score: " + scoreOfThisMove + " move: " + move)
         }   
     } 
 
     return { score: bestScoreFoundSoFar, move: bestMoveFoundSoFar };
+
 } else {
         let bestMoveFoundSoFar = null;
         let bestScoreFoundSoFar = Infinity;
@@ -765,6 +718,7 @@ if (!isPlayerTurn) {
         if (scoreOfThisMove < bestScoreFoundSoFar) {
         bestScoreFoundSoFar = scoreOfThisMove;
         bestMoveFoundSoFar = move;
+        console.log("score: " + scoreOfThisMove + " move: " + move)
         }
     }
 
