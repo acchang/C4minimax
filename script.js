@@ -569,11 +569,20 @@ true or false for
 
 // the new way of checking is not outputting as many as Dtsudo's
 // it's also not choosing smartly but persistently moving up the left side. why?
+
+
+
+// The reason why it kept placing tokens upwards in a single column is 
+// because I kept asking it to choose from the seven available spaces -- 
+// and since I was iterating over the available spaces from index[0] and this is Connect Four,
+// the first space to choose would repeatedly be index[0] until that column was full.
+
+
 // bc the checking in mine is serial whereas he uses a for/of loop?
 // but the for loop does the same thing!
-
-
-
+// it's not choosing because it's not getting as many winning scores, mostly zeroes.
+// but there are some. 
+// the problem is not in the minimax. it's in what's declared playerwon or computerwon
 
     let hasPlayerWon = false;
     let hasComputerWon = false;
