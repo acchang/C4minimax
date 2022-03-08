@@ -627,8 +627,9 @@ true or false for
             }
         }
     }
-
 }
+
+// changes above work? compare to others
 
     return {
     moves: hasPlayerWon || hasComputerWon ? [] : findAvailableIndexes(board),
