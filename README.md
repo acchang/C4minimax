@@ -1,5 +1,30 @@
 # C4minimax
 
+4/13 I think I finally polished this off, thanks to some help from reddit.
+https://www.reddit.com/r/learnprogramming/comments/swpvq8/the_minimax_js_algorithm_i_wrote_for_a_connect/
+https://archive.ph/e7GXm
+
+I managed to get everything up to the scoring algorithm right. That is, I could get the computer to choose from the best of seven choices, but not beyond that. My minimax algorithm kept making inexplicable choices and then it would crash.
+
+It was crashing because it was choosing stuff out of bounds, and then after working through all this, I realized it was crashing because my scoring algorithm was based only getting the greatest possible score. I did this because I wanted to weight its decision: The opponent getting 3-in-a-row was worse than the player getting 3-in-a-row, because you want to be able to continue the game and fight.
+
+The problem is the minimax I wrote was using this logic, but minimax is kind of symmetrical. A 3-in-a-row for the player should be worth as much (but in negative) as a 3-in-a-row for the opponent.
+
+Some other issues pointed out by the expert I got on reddit was that "it uses a fair number of global variables, and those global variables aren't kept in sync well." The one revelation I got from his code was to put everything in a "getBoardState(board)" function, which would keep track of who was playing, if there was a winner, and the state of the board.
+
+Later, I rewrote his code to evaluate the board using my algorithms, but preserved his data structure that kept everything in sync. To see his code with my changes to scoring, go to the repo named C4MinimaxHelp.
+
+Another thing this expert showed me was a way to avoid the processing strain of a great depth. It's just a small trick, but a good one, I think:
+
+"We avoid calling getBoardState (because getBoardState is expensive and time-consuming to invoke). Previously, the code invoked getBoardState at depth=0 but then did nothing with the information. With this change, we could increase depth to 7 (and the time required would be identical to what depth=6 used to do)."
+
+It's basically complete, now I will go back to my old code and fix that, and then maybe play with alpha-beta
+
+It took awhile for me to get this all into my head, my RAM, for me to be aware of everything going on and be able to mix it up. 
+
+
+
+
 2/7 ok, maybe it's time to move on. Or I will try one last time.
 
 1/28
