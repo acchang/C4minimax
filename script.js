@@ -155,11 +155,11 @@ function beginGame() {
     playerOneTurn = true
     document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
 
-    if (gameType == "1PEasy"){
+    if (gameType == "Minimax"){
         itsAOnePlayerGame = true
         resetBoard()
         }
-    else if (gameType == "1PHard"){
+    else if (gameType == "Scoring"){
         itsAHardGame = true
         resetBoard()
         }
@@ -227,8 +227,6 @@ function claimSpot(){
     }
 };
 
-
-
 // if there is a string in row[0], that column is no longer available.
 // find available columns by creating a "newArray" and then "forEach" element in board[0], if it's an integer
 // push the index of the integer into the newArray and return it.
@@ -240,7 +238,6 @@ function findAvailableIndexes(board) {
 })
 return newArray
 };
-
 
 function checkForWinners() {
     horizontalCheck()
@@ -319,7 +316,6 @@ function horizontalCheck() {
     }
 };
 
-
 // Game-playing AI
 
 function assessHorizWindows(board) {
@@ -391,8 +387,6 @@ function scoreTheArray(array) {
     else if ((array.reduce(countPlayerMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return 5}
     else if ((array.reduce(countOpponentMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) {return -500}
     else if ((array.reduce(countOpponentMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) {return -250}
-    // added and changed scoring to be symmetrical, formerly -500, -250
-    // else if (array.reduce(countOpponentMarkers, 0) === 4){return -1000}
     else {return 0}
 };
 
@@ -441,19 +435,16 @@ function computerPlays() {
     if (itsAOnePlayerGame == true) {
         availableIndexes = findAvailableIndexes(gameboard)
         console.log("AI chooses from: " + availableIndexes)
-        // indexPick = (availableIndexes[Math.floor(Math.random() * availableIndexes.length)])
-        indexPick = (minimax(parallelBoard, 4, !playerOneTurn)).move
+        indexPick = (minimax(parallelBoard, 4)).move
     }
     else if (itsAHardGame == true)
         { indexPick = pickBestMove() }
  
-
     let i;
     for (i = 5; i > -1; i--) 
         {if (Number.isInteger(gameboard[i][indexPick])) {
             gameboard[i].splice((indexPick), 1, whosPlaying())
             parallelBoard[i].splice((indexPick), 1, whosPlaying())
-            console.log("**** computerplays " + indexPick + " SG score is " + scoreGameboard(parallelBoard))
             mainTable.innerHTML = ""
             drawBoard()
             checkForWinners() 
@@ -466,8 +457,6 @@ function computerPlays() {
             }
         }    
 };
-
-
 
 function getBoardState(board) {    
     let numPlayerMoves = 0;
@@ -483,84 +472,6 @@ function getBoardState(board) {
     }
     
     let isPlayerTurn = (numPlayerMoves === numComputerMoves)
-
-/* what I need to do is get the boardState hasPlayerWon or hasComputerWon
-scan board in 4 directions, if true, get isPlayerTurn value
-that player won
-true or false for 
-    hasPlayerWon: hasPlayerWon,
-    hasComputerWon: hasComputerWon
---------*/
-
-    /* replace with my own scoring algo 
-    let isInbound = function (boardLocation) {
-        return 0 <= boardLocation.i && boardLocation.i < board.length
-        && 0 <= boardLocation.j && boardLocation.j < board[0].length;
-        };
-    
-    let check4 = function (location1, location2, location3, location4) {
-        if (!isInbound(location1) || !isInbound(location2) || !isInbound(location3) || !isInbound(location4))
-        return null;
-    
-    let location1Move = board[location1.i][location1.j];
-    let location2Move = board[location2.i][location2.j];
-    let location3Move = board[location3.i][location3.j];
-    let location4Move = board[location4.i][location4.j];
-    
-    if (location1Move === "Yellow" && location2Move === "Yellow" && location3Move === "Yellow" && location4Move === "Yellow")
-        return "Yellow";
-    if (location1Move === "Red" && location2Move === "Red" && location3Move === "Red" && location4Move === "Red")
-        return "Red";
-    
-    return null;
-        };*/
-
-
-    // let directions = [
-    // [1, 0], /* a horizontal win */
-    // [0, 1], /* a vertical win */
-    // [1, 1], /* a diagonal win */
-    // [1, -1] /* a diagonal win (in the other direction) 
-    // ];
-
-/*
-    for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[0].length; j++) {
-    for (let direction of directions) {
-    
-       let location1 = { i: i + direction[0] * 0, j: j + direction[1] * 0 };
-       let location2 = { i: i + direction[0] * 1, j: j + direction[1] * 1 };
-       let location3 = { i: i + direction[0] * 2, j: j + direction[1] * 2 };
-       let location4 = { i: i + direction[0] * 3, j: j + direction[1] * 3 };
-     
-       let possibleWinner = check4(location1, location2, location3, location4);
-       
-       if (possibleWinner === "Yellow")
-           hasPlayerWon = true;
-       if (possibleWinner === "Red")
-           hasComputerWon = true;
-    }
-    }
-    };
-*/
-
-// the new way of checking is not outputting as many as Dtsudo's
-// it's also not choosing smartly but persistently moving up the left side. why?
-
-
-
-// The reason why it kept placing tokens upwards in a single column is 
-// because I kept asking it to choose from the seven available spaces -- 
-// and since I was iterating over the available spaces from index[0] and this is Connect Four,
-// the first space to choose would repeatedly be index[0] until that column was full.
-
-
-// bc the checking in mine is serial whereas he uses a for/of loop?
-// but the for loop does the same thing!
-// it's not choosing because it's not getting as many winning scores, mostly zeroes.
-// but there are some. 
-// the problem is not in the minimax. it's in what's declared playerwon or computerwon
-
     let hasPlayerWon = false;
     let hasComputerWon = false;
 
@@ -606,8 +517,6 @@ true or false for
     }
 }
 
-// changes above work? compare to others
-
     return {
     moves: hasPlayerWon || hasComputerWon ? [] : findAvailableIndexes(board),
     isPlayerTurn: isPlayerTurn,
@@ -615,7 +524,6 @@ true or false for
     hasComputerWon: hasComputerWon
     }
 };
-
 
 function applyMove(board, move, isPlayerTurn) {
     let i = board.length - 1;
@@ -641,35 +549,109 @@ function unapplyMove(board, move) {
 
 
 function evaluateBoardPosition(board) {
-    // add in my own
-    // score will be in absolute terms, overly negative or positive.
-    return 0;
+    let evaluatedBoardScore = evaluateHorizWindows(board) + evaluateVertWindows(board)
+    + evaluateUprightWindows(board) + evaluateDownrightWindows(board)
+    + evalMiddles(board)
+    return evaluatedBoardScore;
+ };
+ 
+ function evaluateHorizWindows(board) {
+    let horizEval = 0
+    for (r=0; r<6; r++) {   
+       for (c=0; c<4; c++){
+          let window = [board[r][c], board[r][c+1], board[r][c+2], board[r][c+3]]
+             horizEval += scoreForEval(window)
+       }
     }
+    return horizEval
+ };
+ 
+ function evaluateVertWindows(board) {
+    let vertEval = 0
+    for (r=5; r>2; r--) {
+       for (c=0; c<7; c++){
+          let window = [board[r][c], board[r-1][c], board[r-2][c], board[r-3][c]]
+             vertEval += scoreForEval(window)
+       }
+    }
+    return vertEval
+ };
+ 
+ function evaluateUprightWindows (board) {
+    let uprightEval = 0
+    for (r=5; r>2; r--) {
+       for (c=0; c<4; c++){
+          let window = [board[r][c], board[r-1][c+1], board[r-2][c+2], board[r-3][c+3]]
+             uprightEval += scoreForEval(window)
+       }
+    }
+    return uprightEval
+ };
+ 
+ function evaluateDownrightWindows (board) {
+    let downrightEval = 0
+    for (r=0; r<3; r++) {
+          for (c=0; c<4; c++){
+             let window = [board[r][c], board[r+1][c+1], board[r+2][c+2], board[r+3][c+3]]
+                downrightEval += scoreForEval(window)
+          }
+    }
+    return downrightEval
+ };
+ 
+ function evalMiddles(board){
+    let middlerow = [board[0][3],board[1][3],board[2][3],board[3][3],board[4][3],board[5][3]]
+       let middleScore = ([middlerow.reduce(countYellowMarkers, 0)] * -3) +
+       ([middlerow.reduce(countRedMarkers, 0)] * 3) 
+    return middleScore 
+ };
+ 
+ function countYellowMarkers(counter, ele) { 
+    if (ele == "Yellow") counter +=1
+    return counter}
+ 
+ function countRedMarkers(counter, ele) { 
+    if (ele == "Red") counter +=1
+    return counter}
+ 
+ function scoreForEval(array) { 
+    if (array.reduce(countYellowMarkers, 0) === 4){return -1000}
+    else if (array.reduce(countRedMarkers, 0) === 4){return 1000}
+    else if ((array.reduce(countYellowMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) 
+       {return -500}
+    else if ((array.reduce(countRedMarkers, 0) === 3) && (array.reduce(countEmptySpaces, 0) === 1)) 
+       {return 500}
+    else if ((array.reduce(countYellowMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2))
+       {return -250}
+    else if ((array.reduce(countRedMarkers, 0) === 2) && (array.reduce(countEmptySpaces, 0) === 2)) 
+       {return 250}
+    else {return 0}
+ };
 
     
 function minimax(board, depth) {
 
-let boardState = getBoardState(board);
-let moves = boardState.moves;
-let isPlayerTurn = boardState.isPlayerTurn;
-let hasPlayerWon = boardState.hasPlayerWon;
-let hasComputerWon = boardState.hasComputerWon;
-
 if (depth === 0)
 return { score: evaluateBoardPosition(board) };
 
+        let boardState = getBoardState(board);
+        let moves = boardState.moves;
+        let isPlayerTurn = boardState.isPlayerTurn;
+        let hasPlayerWon = boardState.hasPlayerWon;
+        let hasComputerWon = boardState.hasComputerWon;
+
 if (hasPlayerWon)   {
-console.log("PW")
-return { score: -10000000000 - depth }
+    console.log("PW")
+    return { score: -10000000000 - depth }
 }
 
 if (hasComputerWon) {
-console.log("CW") 
-return { score: 10000000000 + depth }
+    console.log("CW") 
+    return { score: 10000000000 + depth }
 }
 
 if (moves.length === 0)
-return { score: 0 };
+    return { score: 0 };
 
 if (!isPlayerTurn) {
     let bestMoveFoundSoFar = null;
@@ -704,7 +686,7 @@ if (!isPlayerTurn) {
     }
 
 return { score: bestScoreFoundSoFar, move: bestMoveFoundSoFar };
-}
+    }
 }
 
 
