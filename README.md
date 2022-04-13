@@ -18,6 +18,10 @@ Another thing this expert showed me was a way to avoid the processing strain of 
 
 "We avoid calling getBoardState (because getBoardState is expensive and time-consuming to invoke). Previously, the code invoked getBoardState at depth=0 but then did nothing with the information. With this change, we could increase depth to 7 (and the time required would be identical to what depth=6 used to do)."
 
+The logic and weighting was still a little off -- if I play center column to one from the top and then switch to a horizontal strategy one either side of center I can beat it. When I raised the depth to 5, it no longer fell for this.
+
+Also, I can cause some confusion by dropping tokens in quick succession
+
 It's basically complete, now I will go back to my old code and fix that, and then maybe play with alpha-beta
 
 It took awhile for me to get this all into my head, my RAM, for me to be aware of everything going on and be able to mix it up. 
