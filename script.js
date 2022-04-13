@@ -22,8 +22,8 @@ let indexPick
 let availableIndexes
 let gameType
 let playerOneTurn = true
-let itsAOnePlayerGame = false
-let itsAHardGame = false
+let itsAMinimaxGame = false
+let itsAScoringGame = false
 let itsTwoPlayerGame = false
 let isThereAWinner = true
 
@@ -156,11 +156,11 @@ function beginGame() {
     document.getElementsByName("announcements")[0].innerHTML = "Current Player: " + whosPlaying() + "&nbsp;"
 
     if (gameType == "Minimax"){
-        itsAOnePlayerGame = true
+        itsAMinimaxGame = true
         resetBoard()
         }
     else if (gameType == "Scoring"){
-        itsAHardGame = true
+        itsAScoringGame = true
         resetBoard()
         }
     else if (gameType == "2P"){
@@ -213,7 +213,7 @@ function claimSpot(){
             setTimeout(
                 function() {
                     swapTurns() 
-                    if ((itsAOnePlayerGame == true && isThereAWinner == false) || (itsAHardGame == true && isThereAWinner == false))
+                    if ((itsAMinimaxGame == true && isThereAWinner == false) || (itsAScoringGame == true && isThereAWinner == false))
                      {computerPlays()}
                     else {return}
                 }, 240)  
@@ -264,8 +264,8 @@ function winDeclared() {
           alert(whosPlaying() + " wins!")
         }, 10)
     
-    itsAOnePlayerGame = false
-    itsAHardGame = false
+    itsAMinimaxGame = false
+    itsAScoringGame = false
     itsATwoPlayerGame = false
     return
 };
@@ -432,12 +432,11 @@ function pickBestMove() {
 
 
 function computerPlays() {
-    if (itsAOnePlayerGame == true) {
+    if (itsAMinimaxGame == true) {
         availableIndexes = findAvailableIndexes(gameboard)
-        console.log("AI chooses from: " + availableIndexes)
-        indexPick = (minimax(parallelBoard, 4)).move
+        indexPick = (minimax(parallelBoard, 5)).move
     }
-    else if (itsAHardGame == true)
+    else if (itsAScoringGame == true)
         { indexPick = pickBestMove() }
  
     let i;
