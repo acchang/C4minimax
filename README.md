@@ -1,5 +1,16 @@
 # C4minimax
 
+This is a Connect Four game is my first attempt at dabbling in AI. 
+
+You can play it here: https://acchang.github.io/C4minimax/
+
+It uses two types of algorithms. The minimax option looks ahead a set number of moves. With enough moves ahead to look, it could be unbeatable. I have it set at 5, which is pretty formidable. Any more though, and the process hangs a bit.
+
+I have it on my list of to-dos for this to:
+* work on learning 
+
+
+---------
 4/13 I think I finally polished this off, thanks to some help from reddit.
 https://www.reddit.com/r/learnprogramming/comments/swpvq8/the_minimax_js_algorithm_i_wrote_for_a_connect/
 https://archive.ph/e7GXm
