@@ -4,11 +4,27 @@ This is a Connect Four game is my first attempt at dabbling in AI.
 
 You can play it here: https://acchang.github.io/C4minimax/
 
-It uses two types of algorithms. The minimax option looks ahead a set number of moves. With enough moves ahead to look, it could be unbeatable. I have it set at 5, which is pretty formidable. Any more though, and the process hangs a bit.
+It uses two types of algorithms. 
+
+The minimax option looks ahead a set number of moves. With enough moves ahead to look, it could be unbeatable. I have it set at 5, which is pretty formidable. Any more though, and the processing hangs a bit.
 
 I have it on my list of to-dos for this to:
-* work on learning 
+* work on the scaling for this so that it plays in both desktop and mobile. Currently it's sized mainly for mobile because I built this for my lazy friends to test on their phones.
+* work on learning alpha-beta pruning so that it processes faster
+* experiment with local storage so the user can save board state and return to it
+* and a boolean to prevent double-clicks/placing another token while the game is "thinking".
 
+The other option is simpler: 
+
+The scoring option merely assesses the state of the board and chooses the next optimal step by looking at each of the seven possible moves, and assessing the three other spaces around it to see if there are options for 4-in-a-row, 3-in-a-row and 2-in-a-row, with scores corresponding to priority. 
+
+It also plays defensively, acting to block potential connects from the opponent.
+
+It is still challenging, but without the ability to look ahead, it is weaker than minimax.
+
+There is also a two-player option.
+
+My diary of notes and frustrations are below.
 
 ---------
 4/13 I think I finally polished this off, thanks to some help from reddit.
